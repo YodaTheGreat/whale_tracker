@@ -218,8 +218,246 @@
   {
     "label": "Кит 55 HYPE",
     "address": "0xa6BF6D829712E31E5aD7bc13Ee5a60FC436a1A20"
+ },
+  {
+    "label": "Кит 1 WLD",
+    "address": "0xf0007b56607BB268efFe4126655f077F8cf42696"
+ },
+  {
+    "label": "Кит 2 WLD",
+    "address": "0xd7C00cD92Bbd4f2D3b45c92E46EcAc6F69bA0a2e"
+  },
+  {
+    "label": "Кит 3 WLD",
+    "address": "0xd4295f13E6d74FA17cfD3124AD3D4991c61e12FB"
+  },
+  {
+    "label": "Кит 4 WLD",
+    "address": "0x23A4Fc018Da7d9D3C4ED351e2E077167db7EEab9"
+ },
+  {
+    "label": "Кит 5 WLD",
+    "address": "0x6e663889D9CF2Fbb83DfCc4202C7aF216C9C9289"
+ },
+  {
+    "label": "Кит 6 WLD",
+    "address": "0x00b9b84D8650422d1027833F1f75d90dE73183eA"
+ },
+  {
+    "label": "Кит 7 WLD",
+    "address": "0x2b0dF88d8636c690fe0Fc26321BFcCf0493C3358"
+  },
+  {
+    "label": "Кит 8 WLD",
+    "address": "0x6e7c0F2474d392483C6337542C131D0E25F9a046"
+ },
+  {
+    "label": "Кит 9 WLD",
+    "address": "0x9747d86364d997F8AA2105C7F93AA2aab783F529"
+ },
+  {
+    "label": "Кит 10 WLD",
+    "address": "0xD0a4cB143903EFd6c097f796D93E7E478664ea3E"
+ },
+  {
+    "label": "Кит 11 WLD",
+    "address": "0x3BDaed590E77C969843B1d6ceD9bE72652F5ACd8"
+   },
+  {
+    "label": "Кит 12 WLD",
+    "address": "0xE304fcae268EE3f55256356be5E2400d37826319"
+ },
+  {
+    "label": "Кит 13 WLD",
+    "address": "0xD236D755968Ec7868E26A9B876e9776b07cf01dA"
+ },
+  {
+    "label": "Кит 14 WLD",
+    "address": "0x3aD4F3E053cd4cf865062c91657eE0fd4a2A284E"
+ },
+  {
+    "label": "Кит 15 WLD",
+    "address": "0x33052f27Ce5CF0D20A5Ac5CD392afAc38Ba67130"
+ },
+  {
+    "label": "Кит 16 WLD",
+    "address": "0x9B5949C89134a60dC96Cdc189ef814E6e42d1C9B"
+  },
+  {
+    "label": "Кит 17 WLD",
+    "address": "0x5030BCD027C2cF267407631aFe7584dCaA0436df"
+ },
+  {
+    "label": "Кит 18 WLD",
+    "address": "0x0cbe4c52AD7bf1D1C33Bdb598C79aaF681aBD428"
+ },
+  {
+    "label": "Кит 19 WLD",
+    "address": "0x46c92ebF406EdC6BB74367b6Ad0E2EB5ab19A070"
+ },
+  {
+    "label": "Кит 20 WLD",
+    "address": "0x82E46566B84872615C3E40A064F9Cc6304501db8"
+ },
+  {
+    "label": "Кит 21 WLD",
+    "address": "0x0baB347825cA51EFCb538A57e291b5c7883979b5"
+  },
+  {
+    "label": "Кит 22 WLD",
+    "address": "0x3393491C2B6cb8115E661073053B4aE8327574A0"
+ },
+  {
+    "label": "Кит 23 WLD",
+    "address": "0x56CA462182Fb97Ed8adA8F4ad835Cb6bAEEAB972"
+ },
+  {
+    "label": "Кит 24 WLD",
+    "address": "0x908E89c5f01a48653308c27d4fc73DBef01145F8"
+ },
+  {
+    "label": "Кит 25 WLD",
+    "address": "0x2a33d2ded69F3170356Adc979F45BB42b81CD6F7"
+ },
+  {
+    "label": "Кит 26 WLD",
+    "address": "0xb76b8888e2c7c9b4015B229c25eD1fb80D0d21e1"
+ },
+  {
+    "label": "Кит 27 WLD",
+    "address": "0x41c50fEe91821231e6d6359779B5D46E214116b7"
+  },
+  {
+    "label": "Кит 28 WLD",
+    "address": "0xa866C630DaFcD952D9150F77c3646aDda91A463B"
+ },
+  {
+    "label": "Кит 29 WLD",
+    "address": "0x58706F3cBfCd05C68e03f83DAEDbC0Aa6ab4b45c"
+ },
+  {
+    "label": "Кит 30 WLD",
+    "address": "0x70779c76FC7269caA65F23A2854bd8414ec3b1e5"
+ },
+  {
+    "label": "Кит 31 WLD",
+    "address": "0x70406Dc38B0ba17389aeDd3aE5c45dEF72e93298"
+ },
+  {
+    "label": "Кит 32 WLD",
+    "address": "0xb058453b97455b8Cbdbc403f792d94e95B1046a9"
+ },
+  {
+    "label": "Кит 33 WLD",
+    "address": "0x4F3160e3Ef0396721631f75591e57aD7EeC70F32"
+ },
+  {
+    "label": "Кит 34 WLD",
+    "address": "0x54206C29141164F28017E7518d18985844D4E657"
+ },
+  {
+    "label": "Кит 35 WLD",
+    "address": "0xe5fbd000F22144A9D6EDDef63Fbb6573bE592492"
+ },
+  {
+    "label": "Кит 36 WLD",
+    "address": "0x5cF986E0F77822bde4f8747A62E4Eab966694773"
+ },
+  {
+    "label": "Кит 37 WLD",
+    "address": "0x7250f754fd6f379648B6B0070f62c93b1fEbD821"
+ },
+  {
+    "label": "Кит 38 WLD",
+    "address": "0xf91f5456d1372fbaE7e909043f94C2d7D52d0A0c"
+ },
+  {
+    "label": "Кит 39 WLD",
+    "address": "0x696aA36Ac982b557cd0d61e4a3d892aE2cCA6F8F"
+ },
+  {
+    "label": "Кит 40 WLD",
+    "address": "0x5094D81b50bCA176905622eFe6dBAB590fdc0Bf0"
+   },
+  {
+    "label": "Кит 41 WLD",
+    "address": "0xdfE92eC265E26B45c2DE65a87826998E0904D837"
+  },
+  {
+    "label": "Кит 42 WLD",
+    "address": "0xa4762DB4b49daE0Be26c05d4535741ab88EB02d3"
+   },
+  {
+    "label": "Кит 43 WLD",
+    "address": "0x63250A0c29121449482354a82767EeDFEB88C822"
+ },
+  {
+    "label": "Кит 44 WLD",
+    "address": "0xB474EdFC2e1B3209Ab8Eda0754464249bA54689e"
+ },
+  {
+    "label": "Кит 45 WLD",
+    "address": "0xC920d2Fd838975498157F9Ffd82Df64f31e5494e"
+ },
+  {
+    "label": "Кит 46 WLD",
+    "address": "0xCF5Cf0B285bCde2d4423862F1232E4A396Ad5C8c"
+ },
+  {
+    "label": "Кит 47 WLD",
+    "address": "0x7814D26Eb0C44cF7A06a49E4a4D44222104F9bBa"
+ },
+  {
+    "label": "Кит 48 WLD",
+    "address": "0x88bF63a1Ff039FD236748f8e6289390679Ae1ce6"
+ },
+  {
+    "label": "Кит 49 WLD",
+    "address": "0x3580282982C21B52E47D5e7fF1E3489CF6347E5A"
+ },
+  {
+    "label": "Кит 50 WLD",
+    "address": "0x9a2998efA7FC091803BA6Afa884A3b122a076Fab"
+ },
+  {
+    "label": "Кит 51 WLD",
+    "address": "0xC3D60E7f6DB995F626E750C900B2c91fe588888c"
+ },
+  {
+    "label": "Кит 52 WLD",
+    "address": "0x8674A79d7c2ae3eb1Ad8314C3CB1D0eb90A06b28"
+   },
+  {
+    "label": "Кит 53 WLD",
+    "address": "0x27B9b2098Be5D678D64027CA9A1a1ADAE995EEf2"
+ },
+  {
+    "label": "Кит 54 WLD",
+    "address": "0xC20395C27374B0A206204688c25c8d998B8FbbF4"
+ },
+  {
+    "label": "Кит 55 WLD",
+    "address": "0x40b7f356e96C46EF646909bbfF9Ee96b9D695018"
+  },
+  {
+    "label": "Кит 56 WLD",
+    "address": "0x0e778C430297868Cfca8db7435D603Db141543cD"
+ },
+  {
+    "label": "Кит 57 WLD",
+    "address": "0x32d654758a7411Fb3Be2ea3c414728f1E46a58aB"
+ },
+  {
+    "label": "Кит 58 WLD",
+    "address": "0x5d547E539351E73F3e0DA314B82Fb5532E0aEF6B"
+ },
+  {
+    "label": "Кит 59 WLD",
+    "address": "0xf3Bce62a2acE74751BE4EE0109decd44C97a05d8"
+ },
+  {
+    "label": "Кит 60 WLD",
+    "address": "0x156FC25c74B3296D90e63d9522Fb44607ADb5cF2"
   }
-
-
 
 ]
