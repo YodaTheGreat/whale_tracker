@@ -1,6 +1,4 @@
 {
-  "telegram_bot_token": "8976748087:AAHybBVttyZlCu2j35odArZBC3FbyvWe2t0",
-  "telegram_chat_id": "30663404",
   "threshold_usd": 20000,
   "coins_of_interest": ["HYPE", "WLD", "NEAR", "ONDO", "TAO", "LIT"],
   "price_hint": {}
