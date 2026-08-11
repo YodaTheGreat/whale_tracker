@@ -1,0 +1,148 @@
+{
+  "0x72b23AeBbD4aBfc1cEA755686710E74c93696Fae": {
+    "spot": {},
+    "perp": []
+  },
+  "0x90B38C5728f184C87EF46479cf7B402d7B98B98a": {
+    "spot": {
+      "HYPE": {
+        "total": 0.00011888,
+        "hold": 0.0
+      }
+    },
+    "perp": []
+  },
+  "0x5DB8407AFb7d4afE1F9C47e59BE79e7a7C29F18C": {
+    "spot": {
+      "HYPE": {
+        "total": 4.0004,
+        "hold": 0.0
+      }
+    },
+    "perp": []
+  },
+  "0xaDFffc33cdC9970349CBcEa3D73Ec343d6ed116D": {
+    "spot": {},
+    "perp": []
+  },
+  "0x48F7221F31fF3B6807cA2522972Fc847D0948189": {
+    "spot": {},
+    "perp": []
+  },
+  "0x60a0C910444f74217835023653991A722E99C8dc": {
+    "spot": {},
+    "perp": []
+  },
+  "0x78F5f83B9a002f5263e312944Dd7589E8FA5b552": {
+    "spot": {},
+    "perp": []
+  },
+  "0x9ff9dBfADad1def3075d340BfC151c9392526880": {
+    "spot": {},
+    "perp": []
+  },
+  "0xf55Fb97D4f572a6Ffb13a64A03D8b18afDfFf1C2": {
+    "spot": {
+      "HYPE": {
+        "total": 0.01,
+        "hold": 0.0
+      }
+    },
+    "perp": []
+  },
+  "0xb8dEC80f3BC7E4DdE3A8239ac433C992e9455e3f": {
+    "spot": {},
+    "perp": []
+  },
+  "0xF70C9547CA5016797D7fd9623320D653e82d83a5": {
+    "spot": {},
+    "perp": []
+  },
+  "0x60Ff1Fd24c4c39E7C45f1829cA2A38450632FDF9": {
+    "spot": {
+      "HYPE": {
+        "total": 9.23e-06,
+        "hold": 0.0
+      }
+    },
+    "perp": []
+  },
+  "0x76d43a75e180fFc6c2346c78716700c81A546045": {
+    "spot": {},
+    "perp": []
+  },
+  "0xca34B166795425BbF786e3642F87eE3b1B3934fe": {
+    "spot": {},
+    "perp": []
+  },
+  "0x12249312823853bCb86fD8f8339FE72d63f6301F": {
+    "spot": {
+      "HYPE": {
+        "total": 5e-08,
+        "hold": 0.0
+      }
+    },
+    "perp": []
+  },
+  "0x2e2d39fFE28EF29Dc428B61Ea2d64c519968057D": {
+    "spot": {},
+    "perp": []
+  },
+  "0xC6694748b323cA21817c1C86fcc99956c9cE92d3": {
+    "spot": {},
+    "perp": []
+  },
+  "0x08c9829D55771deD91B56c0EC311061A2B841bC1": {
+    "spot": {},
+    "perp": []
+  },
+  "0x87A6605B82798E5673FAF0CcD4C41B0A32988624": {
+    "spot": {},
+    "perp": []
+  },
+  "0xe16c3D86af969d235474209736739fE76327Ac91": {
+    "spot": {},
+    "perp": []
+  },
+  "0x20d6919414931889cA910911A610aA8F4C52dEDa": {
+    "spot": {},
+    "perp": []
+  },
+  "0xB4bf00E3eBAD980C9c2814B8CA8F0FAf0773442f": {
+    "spot": {},
+    "perp": []
+  },
+  "0xeCF0DdAb9fCf76434F31e9C554A9f8465b4B7444": {
+    "spot": {},
+    "perp": []
+  },
+  "0x967eA3a3CeAD89A36D6a75E5E081959E0FB1420d": {
+    "spot": {},
+    "perp": []
+  },
+  "0x7ddF71689a30922199F2700AC9c492B1B26dEF3b": {
+    "spot": {
+      "HYPE": {
+        "total": 10.0,
+        "hold": 0.0
+      }
+    },
+    "perp": []
+  },
+  "0xf6000bB2E7579D4eAa741dDb0195187325380c3E": {
+    "spot": {},
+    "perp": []
+  },
+  "0x120e191D93b483A89573B6Aa8E9e64c352432593": {
+    "spot": {},
+    "perp": []
+  },
+  "0x96Cb9918b899e09E398Edb6F5F15ccDc363f6081": {
+    "spot": {},
+    "perp": []
+  },
+  "0x23BEBCd577f194b5F65042Fd84f815eC3B896D86": {
+    "spot": {},
+    "perp": []
+  }
+}
