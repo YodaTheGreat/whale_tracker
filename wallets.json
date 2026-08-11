@@ -458,6 +458,189 @@
   {
     "label": "Кит 60 WLD",
     "address": "0x156FC25c74B3296D90e63d9522Fb44607ADb5cF2"
+ },
+  {
+    "label": "Кит 1 LINK",
+    "address": "0x638c52e3348C5100bba8CF14E4512A168fE47213"
+ },
+  {
+    "label": "Кит 2 LINK",
+    "address": "0x4bD9a84F22bD479f630E2f6c3311285D6eb6B768"
+ },
+  {
+    "label": "Кит 3 LINK",
+    "address": "0xa88ed7316d6d3aa7dA1b14A8AeA31d87fB803C1d"
+ },
+  {
+    "label": "Кит 4 LINK",
+    "address": "0xf795e4c6fF15afE8b2eD9C2A6c3a6C634C58F65E"
+  },
+  {
+    "label": "Кит 5 LINK",
+    "address": "0xF5B007a6341AcC8CfEC581d8A1c5560bC19d9650"
+   },
+  {
+    "label": "Кит 6 LINK",
+    "address": "0xd072A5d8F322dD59dB173603fBb6CBb61F3F3D28"
+  },
+  {
+    "label": "Кит 7 LINK",
+    "address": "0xaB101F180a64dFb49c118aA4e0aAa0297DD5Cfd5"
+ },
+  {
+    "label": "Кит 8 LINK",
+    "address": "0xaDFffc33cdC9970349CBcEa3D73Ec343d6ed116D"
+ },
+  {
+    "label": "Кит 9 LINK",
+    "address": "0x74F2B8f9aF0165A23CB1320f3E8909fda2146661"
+  },
+  {
+    "label": "Кит 10 LINK",
+    "address": "0x33eAaE99847d8Efd6519C9d944dc30C08E860801"
+ },
+  {
+    "label": "Кит 11 LINK",
+    "address": "0x6b5c8bE969BB20de43b4e0fa36eaFa37EEc1B7eC"
+ },
+  {
+    "label": "Кит 12 LINK",
+    "address": "0x8D2a3C281fAC6D6503DcF810339F710dAA825B7B"
+ },
+  {
+    "label": "Кит 13 LINK",
+    "address": "0x25431341A5800759268a6aC1d3CD91C029D7d9CA"
+ },
+  {
+    "label": "Кит 14 LINK",
+    "address": "0x0044A98fEedc6D0C19194078D3380941A7ca2B12"
+  },
+  {
+    "label": "Кит 15 LINK",
+    "address": "0xC42e81b72b3581bBcD29aCE3363326CF444a23D8"
+ },
+  {
+    "label": "Кит 16 LINK",
+    "address": "0x4761Ac272830dD8344eB90e13011f01beb53625E"
+ },
+  {
+    "label": "Кит 17 LINK",
+    "address": "0x6872b6630a3AFcD3117191a8403C2002e13Df7dE"
+ },
+  {
+    "label": "Кит 18 LINK",
+    "address": "0x4cD221750d76983b18a4BF3A7ebcd372cDC1df57"
+ },
+  {
+    "label": "Кит 19 LINK",
+    "address": "0x3544C0B6c916776c81C65fE3C6417f91cB161247"
+ },
+  {
+    "label": "Кит 20 LINK",
+    "address": "0x48d6Df5B3291B171960D68B8424338040f6fF466"
+ },
+  {
+    "label": "Кит 21 LINK",
+    "address": "0xb6E2dd7AAfCe89276319255a39e1c912E729f726"
+ },
+  {
+    "label": "Кит 22 LINK",
+    "address": "0x174Ca62427d18b317b4226342db9E309c0fbd841"
+  },
+  {
+    "label": "Кит 23 LINK",
+    "address": "0xD4b3e51C7fa014acE0bb423C49f2f31DdFEbC656"
+ },
+  {
+    "label": "Кит 24 LINK",
+    "address": "0xB14460f817dC69B8C87Caeb086A1aA684A660453"
+ },
+  {
+    "label": "Кит 1 CFG",
+    "address": "0xD052A46b8e0C89fAcB393805E1917AfD20f293Cb"
+ },
+  {
+    "label": "Кит 2 CFG",
+    "address": "0x845f7623E756370E8d4E7d3ac8fB6BA6574d5467"
+ },
+  {
+    "label": "Кит 3 CFG",
+    "address": "0xB185814EC5A0823e712f47De957748F6E950Df6D"
+ },
+  {
+    "label": "Кит 4 CFG",
+    "address": "0x4CD9dE5858273eD45FffC1893fc465AaFb0FFEca"
+ },
+  {
+    "label": "Кит 5 CFG",
+    "address": "0x30e62744Df9f5525e6dBdc475326f4500BB56682"
+ },
+  {
+    "label": "Кит 6 CFG",
+    "address": "0xd06D8384204b7f5Fc20a59Cfd0260B6F24b19e5F"
+ },
+  {
+    "label": "Кит 7 CFG",
+    "address": "0xc7ffB07dcDbf957E89C0F46b802B05c7378E3F2e"
+ },
+  {
+    "label": "Кит 8 CFG",
+    "address": "0x3A2216b5789483B6F86C0E048564ee128A5C9A6a"
+ },
+  {
+    "label": "Кит 9 CFG",
+    "address": "0x6EB4CaA4752f284553dce520B78371767854B73a"
+ },
+  {
+    "label": "Кит 10 CFG",
+    "address": "0x5148788c15d1487220F7C66B9487C95A12C3d363"
+ },
+  {
+    "label": "Кит 11 CFG",
+    "address": "0xCa09224D24997D649dd9DA038087f0635a0dc2FA"
+ },
+  {
+    "label": "Кит 12 CFG",
+    "address": "0x4B7778dF7f9DAa1Ee6c8cB8FC41077Fd977FAa70"
+ },
+  {
+    "label": "Кит 13 CFG",
+    "address": "0x00e7582473D82a201A0b25e77d8D0F4F51103C22"
+ },
+  {
+    "label": "Кит 14 CFG",
+    "address": "0xcEAc23101A5a8beC4A5378E5E194350a9d5F98BB"
+ },
+  {
+    "label": "Кит 15 CFG",
+    "address": "0x3733B2CB6aD87428453725dD7BD39D75ACc538d5"
+  },
+  {
+    "label": "Кит 16 CFG",
+    "address": "0x3C716D252B53891753DE883894fF29a9EBeE0f54"
+ },
+  {
+    "label": "Кит 17 CFG",
+    "address": "0xb3DacC732509Ba6B7F25Ad149e56cA44fE901AB9"
+ },
+  {
+    "label": "Кит 18 CFG",
+    "address": "0x03A3aDEF387f814E06caf8AB8011328257F21eE6"
+ },
+  {
+    "label": "Кит 19 CFG",
+    "address": "0x0d28e527290aaaEd4EfEDC7c6C98050Ca13c2D93"
+ },
+  {
+    "label": "Кит 20 CFG",
+    "address": "0xE85cDe320b942ED21c68d47DFf37e46B2c2f370e"
   }
+
+
+
+
+
+
+
 
 ]
