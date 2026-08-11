@@ -1,5 +1,5 @@
 {
   "threshold_usd": 20000,
-  "coins_of_interest": ["HYPE", "WLD", "NEAR", "ONDO", "TAO", "LIT"],
+  "coins_of_interest": ["HYPE", "WLD", "NEAR", "ONDO", "TAO", "LINK"],
   "price_hint": {}
 }
