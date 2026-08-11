@@ -244,5 +244,445 @@
   "0xa6BF6D829712E31E5aD7bc13Ee5a60FC436a1A20": {
     "spot": {},
     "perp": []
+  },
+  "0xf0007b56607BB268efFe4126655f077F8cf42696": {
+    "spot": {},
+    "perp": []
+  },
+  "0xd7C00cD92Bbd4f2D3b45c92E46EcAc6F69bA0a2e": {
+    "spot": {},
+    "perp": []
+  },
+  "0xd4295f13E6d74FA17cfD3124AD3D4991c61e12FB": {
+    "spot": {},
+    "perp": []
+  },
+  "0x23A4Fc018Da7d9D3C4ED351e2E077167db7EEab9": {
+    "spot": {},
+    "perp": []
+  },
+  "0x6e663889D9CF2Fbb83DfCc4202C7aF216C9C9289": {
+    "spot": {},
+    "perp": []
+  },
+  "0x00b9b84D8650422d1027833F1f75d90dE73183eA": {
+    "spot": {},
+    "perp": []
+  },
+  "0x2b0dF88d8636c690fe0Fc26321BFcCf0493C3358": {
+    "spot": {},
+    "perp": []
+  },
+  "0x6e7c0F2474d392483C6337542C131D0E25F9a046": {
+    "spot": {},
+    "perp": []
+  },
+  "0x9747d86364d997F8AA2105C7F93AA2aab783F529": {
+    "spot": {},
+    "perp": []
+  },
+  "0xD0a4cB143903EFd6c097f796D93E7E478664ea3E": {
+    "spot": {},
+    "perp": []
+  },
+  "0x3BDaed590E77C969843B1d6ceD9bE72652F5ACd8": {
+    "spot": {},
+    "perp": []
+  },
+  "0xE304fcae268EE3f55256356be5E2400d37826319": {
+    "spot": {},
+    "perp": []
+  },
+  "0xD236D755968Ec7868E26A9B876e9776b07cf01dA": {
+    "spot": {},
+    "perp": []
+  },
+  "0x3aD4F3E053cd4cf865062c91657eE0fd4a2A284E": {
+    "spot": {},
+    "perp": []
+  },
+  "0x33052f27Ce5CF0D20A5Ac5CD392afAc38Ba67130": {
+    "spot": {},
+    "perp": []
+  },
+  "0x9B5949C89134a60dC96Cdc189ef814E6e42d1C9B": {
+    "spot": {},
+    "perp": []
+  },
+  "0x5030BCD027C2cF267407631aFe7584dCaA0436df": {
+    "spot": {},
+    "perp": []
+  },
+  "0x0cbe4c52AD7bf1D1C33Bdb598C79aaF681aBD428": {
+    "spot": {},
+    "perp": []
+  },
+  "0x46c92ebF406EdC6BB74367b6Ad0E2EB5ab19A070": {
+    "spot": {},
+    "perp": []
+  },
+  "0x82E46566B84872615C3E40A064F9Cc6304501db8": {
+    "spot": {},
+    "perp": []
+  },
+  "0x0baB347825cA51EFCb538A57e291b5c7883979b5": {
+    "spot": {},
+    "perp": []
+  },
+  "0x3393491C2B6cb8115E661073053B4aE8327574A0": {
+    "spot": {},
+    "perp": []
+  },
+  "0x56CA462182Fb97Ed8adA8F4ad835Cb6bAEEAB972": {
+    "spot": {},
+    "perp": []
+  },
+  "0x908E89c5f01a48653308c27d4fc73DBef01145F8": {
+    "spot": {},
+    "perp": []
+  },
+  "0x2a33d2ded69F3170356Adc979F45BB42b81CD6F7": {
+    "spot": {},
+    "perp": []
+  },
+  "0xb76b8888e2c7c9b4015B229c25eD1fb80D0d21e1": {
+    "spot": {},
+    "perp": []
+  },
+  "0x41c50fEe91821231e6d6359779B5D46E214116b7": {
+    "spot": {},
+    "perp": []
+  },
+  "0xa866C630DaFcD952D9150F77c3646aDda91A463B": {
+    "spot": {},
+    "perp": []
+  },
+  "0x58706F3cBfCd05C68e03f83DAEDbC0Aa6ab4b45c": {
+    "spot": {},
+    "perp": []
+  },
+  "0x70779c76FC7269caA65F23A2854bd8414ec3b1e5": {
+    "spot": {},
+    "perp": []
+  },
+  "0x70406Dc38B0ba17389aeDd3aE5c45dEF72e93298": {
+    "spot": {},
+    "perp": []
+  },
+  "0xb058453b97455b8Cbdbc403f792d94e95B1046a9": {
+    "spot": {},
+    "perp": []
+  },
+  "0x4F3160e3Ef0396721631f75591e57aD7EeC70F32": {
+    "spot": {},
+    "perp": []
+  },
+  "0x54206C29141164F28017E7518d18985844D4E657": {
+    "spot": {},
+    "perp": []
+  },
+  "0xe5fbd000F22144A9D6EDDef63Fbb6573bE592492": {
+    "spot": {},
+    "perp": []
+  },
+  "0x5cF986E0F77822bde4f8747A62E4Eab966694773": {
+    "spot": {},
+    "perp": []
+  },
+  "0x7250f754fd6f379648B6B0070f62c93b1fEbD821": {
+    "spot": {},
+    "perp": []
+  },
+  "0xf91f5456d1372fbaE7e909043f94C2d7D52d0A0c": {
+    "spot": {},
+    "perp": []
+  },
+  "0x696aA36Ac982b557cd0d61e4a3d892aE2cCA6F8F": {
+    "spot": {},
+    "perp": []
+  },
+  "0x5094D81b50bCA176905622eFe6dBAB590fdc0Bf0": {
+    "spot": {},
+    "perp": []
+  },
+  "0xdfE92eC265E26B45c2DE65a87826998E0904D837": {
+    "spot": {},
+    "perp": []
+  },
+  "0xa4762DB4b49daE0Be26c05d4535741ab88EB02d3": {
+    "spot": {},
+    "perp": []
+  },
+  "0x63250A0c29121449482354a82767EeDFEB88C822": {
+    "spot": {},
+    "perp": []
+  },
+  "0xB474EdFC2e1B3209Ab8Eda0754464249bA54689e": {
+    "spot": {},
+    "perp": []
+  },
+  "0xC920d2Fd838975498157F9Ffd82Df64f31e5494e": {
+    "spot": {},
+    "perp": []
+  },
+  "0xCF5Cf0B285bCde2d4423862F1232E4A396Ad5C8c": {
+    "spot": {},
+    "perp": []
+  },
+  "0x7814D26Eb0C44cF7A06a49E4a4D44222104F9bBa": {
+    "spot": {},
+    "perp": []
+  },
+  "0x88bF63a1Ff039FD236748f8e6289390679Ae1ce6": {
+    "spot": {},
+    "perp": []
+  },
+  "0x3580282982C21B52E47D5e7fF1E3489CF6347E5A": {
+    "spot": {},
+    "perp": []
+  },
+  "0x9a2998efA7FC091803BA6Afa884A3b122a076Fab": {
+    "spot": {},
+    "perp": []
+  },
+  "0xC3D60E7f6DB995F626E750C900B2c91fe588888c": {
+    "spot": {},
+    "perp": []
+  },
+  "0x8674A79d7c2ae3eb1Ad8314C3CB1D0eb90A06b28": {
+    "spot": {},
+    "perp": []
+  },
+  "0x27B9b2098Be5D678D64027CA9A1a1ADAE995EEf2": {
+    "spot": {},
+    "perp": []
+  },
+  "0xC20395C27374B0A206204688c25c8d998B8FbbF4": {
+    "spot": {},
+    "perp": []
+  },
+  "0x40b7f356e96C46EF646909bbfF9Ee96b9D695018": {
+    "spot": {},
+    "perp": []
+  },
+  "0x0e778C430297868Cfca8db7435D603Db141543cD": {
+    "spot": {},
+    "perp": []
+  },
+  "0x32d654758a7411Fb3Be2ea3c414728f1E46a58aB": {
+    "spot": {},
+    "perp": []
+  },
+  "0x5d547E539351E73F3e0DA314B82Fb5532E0aEF6B": {
+    "spot": {},
+    "perp": []
+  },
+  "0xf3Bce62a2acE74751BE4EE0109decd44C97a05d8": {
+    "spot": {},
+    "perp": []
+  },
+  "0x156FC25c74B3296D90e63d9522Fb44607ADb5cF2": {
+    "spot": {},
+    "perp": []
+  },
+  "0x638c52e3348C5100bba8CF14E4512A168fE47213": {
+    "spot": {},
+    "perp": []
+  },
+  "0x4bD9a84F22bD479f630E2f6c3311285D6eb6B768": {
+    "spot": {},
+    "perp": []
+  },
+  "0xa88ed7316d6d3aa7dA1b14A8AeA31d87fB803C1d": {
+    "spot": {},
+    "perp": []
+  },
+  "0xf795e4c6fF15afE8b2eD9C2A6c3a6C634C58F65E": {
+    "spot": {},
+    "perp": []
+  },
+  "0xF5B007a6341AcC8CfEC581d8A1c5560bC19d9650": {
+    "spot": {},
+    "perp": []
+  },
+  "0xd072A5d8F322dD59dB173603fBb6CBb61F3F3D28": {
+    "spot": {},
+    "perp": []
+  },
+  "0xaB101F180a64dFb49c118aA4e0aAa0297DD5Cfd5": {
+    "spot": {},
+    "perp": []
+  },
+  "0x74F2B8f9aF0165A23CB1320f3E8909fda2146661": {
+    "spot": {},
+    "perp": []
+  },
+  "0x33eAaE99847d8Efd6519C9d944dc30C08E860801": {
+    "spot": {},
+    "perp": []
+  },
+  "0x6b5c8bE969BB20de43b4e0fa36eaFa37EEc1B7eC": {
+    "spot": {},
+    "perp": []
+  },
+  "0x8D2a3C281fAC6D6503DcF810339F710dAA825B7B": {
+    "spot": {},
+    "perp": []
+  },
+  "0x25431341A5800759268a6aC1d3CD91C029D7d9CA": {
+    "spot": {},
+    "perp": []
+  },
+  "0x0044A98fEedc6D0C19194078D3380941A7ca2B12": {
+    "spot": {},
+    "perp": []
+  },
+  "0xC42e81b72b3581bBcD29aCE3363326CF444a23D8": {
+    "spot": {},
+    "perp": []
+  },
+  "0x4761Ac272830dD8344eB90e13011f01beb53625E": {
+    "spot": {},
+    "perp": []
+  },
+  "0x6872b6630a3AFcD3117191a8403C2002e13Df7dE": {
+    "spot": {},
+    "perp": []
+  },
+  "0x4cD221750d76983b18a4BF3A7ebcd372cDC1df57": {
+    "spot": {},
+    "perp": []
+  },
+  "0x3544C0B6c916776c81C65fE3C6417f91cB161247": {
+    "spot": {},
+    "perp": []
+  },
+  "0x48d6Df5B3291B171960D68B8424338040f6fF466": {
+    "spot": {},
+    "perp": []
+  },
+  "0xb6E2dd7AAfCe89276319255a39e1c912E729f726": {
+    "spot": {},
+    "perp": []
+  },
+  "0x174Ca62427d18b317b4226342db9E309c0fbd841": {
+    "spot": {},
+    "perp": []
+  },
+  "0xD4b3e51C7fa014acE0bb423C49f2f31DdFEbC656": {
+    "spot": {},
+    "perp": []
+  },
+  "0xB14460f817dC69B8C87Caeb086A1aA684A660453": {
+    "spot": {},
+    "perp": []
+  },
+  "0x0D37Bf9ef9254F73e75dcfE2da5837E22d9f3553": {
+    "spot": {},
+    "perp": []
+  },
+  "0xb165986AE836D0ef7A909Db4087df1E38d365947": {
+    "spot": {},
+    "perp": []
+  },
+  "0xdf3288F9E54809C97eDaBDEb8f0c3c26Ce0f5192": {
+    "spot": {},
+    "perp": []
+  },
+  "0xC45Ca0897792134Dd2044d85ae99767D067f03d2": {
+    "spot": {},
+    "perp": []
+  },
+  "0x74c863c2C648488eec3ba15D53992311b4c03327": {
+    "spot": {},
+    "perp": []
+  },
+  "0xd088310e19c2708C3FB6168e15AFF2cc70BdE633": {
+    "spot": {},
+    "perp": []
+  },
+  "0x1a209a3aC7D35eF616d1041CFbBE72c2A089dA1e": {
+    "spot": {},
+    "perp": []
+  },
+  "0x935DaAB29850E7Aa1e732dde9580c5Bc2ad03a66": {
+    "spot": {},
+    "perp": []
+  },
+  "0xf2472250C30ddF648fCf21cc1c71730303FA1CD8": {
+    "spot": {},
+    "perp": []
+  },
+  "0xc2A0Db5ECFdAA677b36609d6a158429B32760F49": {
+    "spot": {},
+    "perp": []
+  },
+  "0x97BfB493FdD8f5bb61805bFC02d2a8dC2f0CabAB": {
+    "spot": {},
+    "perp": []
+  },
+  "0x7a5cf8c35a76506E5A44D5Eb5F8536C88B75EB6E": {
+    "spot": {},
+    "perp": []
+  },
+  "0xBC19e57Ff9e5E5FB23847715FC1c63555982B390": {
+    "spot": {},
+    "perp": []
+  },
+  "0xc979241e738a4db516B21Cf5C1bf3953010ada03": {
+    "spot": {},
+    "perp": []
+  },
+  "0xCcD989da582d5552E5100e9068c9B6b0B1fCBD18": {
+    "spot": {},
+    "perp": []
+  },
+  "0xe3dB5c9B702e18Ba3A5c119f0DB20503cD60c40E": {
+    "spot": {},
+    "perp": []
+  },
+  "0x9507ceB0Bb2dAc8dd7dcdDf2F75D3847B5DDa39B": {
+    "spot": {},
+    "perp": []
+  },
+  "0x7c2C59fC78aE40bAcCd7CC41Cedd1400DFcfA1cA": {
+    "spot": {},
+    "perp": []
+  },
+  "0xBd7A508D86AF13851DbA60F8a81189eA820AEA27": {
+    "spot": {},
+    "perp": []
+  },
+  "0x50E11Ee6Ecd5DC8f5Cbd06951FcA04c536e8Fb24": {
+    "spot": {},
+    "perp": []
+  },
+  "0xB51Bf9029d778899d42e96ebCdc0498bd061006d": {
+    "spot": {},
+    "perp": []
+  },
+  "0xd367E507282Cd1b461891bD86051F4cb6d10069B": {
+    "spot": {},
+    "perp": []
+  },
+  "0xA19D991C20cc0e18c2455738e5e5B1904b5832C0": {
+    "spot": {},
+    "perp": []
+  },
+  "0x44d5D0f3fc2E3D8FEecC5a59fA396c29272DbD4B": {
+    "spot": {},
+    "perp": []
+  },
+  "0x1c0c0fE7976CB2A0B740f890a41CF0A68227859C": {
+    "spot": {},
+    "perp": []
+  },
+  "0x6a23a65Cc75Bc5E5390d9CD34c4B94B6fD7308b5": {
+    "spot": {},
+    "perp": []
+  },
+  "0x7593C88aD06569b8ed72BB74bbDE724b294DD1e5": {
+    "spot": {},
+    "perp": []
   }
 }
