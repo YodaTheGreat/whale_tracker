@@ -554,7 +554,127 @@
   {
     "label": "Кит 24 LINK",
     "address": "0xB14460f817dC69B8C87Caeb086A1aA684A660453"
- }
+ },
+  {
+    "label": "Кит 1 ONDO",
+    "address": "0x0D37Bf9ef9254F73e75dcfE2da5837E22d9f3553"
+ },
+  {
+    "label": "Кит 2 ONDO",
+    "address": "0xb165986AE836D0ef7A909Db4087df1E38d365947"
+ },
+  {
+    "label": "Кит 3 ONDO",
+    "address": "0xdf3288F9E54809C97eDaBDEb8f0c3c26Ce0f5192"
+ },
+  {
+    "label": "Кит 4 ONDO",
+    "address": "0xaDFffc33cdC9970349CBcEa3D73Ec343d6ed116D"
+ },
+  {
+    "label": "Кит 5 ONDO",
+    "address": "0x77FB357f55BEf5a70d30663955F8C9f35794DF0E"
+ },
+  {
+    "label": "Кит 6 ONDO",
+    "address": "0xC45Ca0897792134Dd2044d85ae99767D067f03d2"
+ },
+  {
+    "label": "Кит 7 ONDO",
+    "address": "0x74c863c2C648488eec3ba15D53992311b4c03327"
+ },
+  {
+    "label": "Кит 8 ONDO",
+    "address": "0xd088310e19c2708C3FB6168e15AFF2cc70BdE633"
+ },
+  {
+    "label": "Кит 9 ONDO",
+    "address": "0x1a209a3aC7D35eF616d1041CFbBE72c2A089dA1e"
+ },
+  {
+    "label": "Кит 10 ONDO",
+    "address": "0x935DaAB29850E7Aa1e732dde9580c5Bc2ad03a66"
+ },
+  {
+    "label": "Кит 11 ONDO",
+    "address": "0xf2472250C30ddF648fCf21cc1c71730303FA1CD8"
+ },
+  {
+    "label": "Кит 12 ONDO",
+    "address": "0xc2A0Db5ECFdAA677b36609d6a158429B32760F49"
+ },
+  {
+    "label": "Кит 13 ONDO",
+    "address": "0x97BfB493FdD8f5bb61805bFC02d2a8dC2f0CabAB"
+ },
+  {
+    "label": "Кит 14 ONDO",
+    "address": "0x7a5cf8c35a76506E5A44D5Eb5F8536C88B75EB6E"
+ },
+  {
+    "label": "Кит 15 ONDO",
+    "address": "0xBC19e57Ff9e5E5FB23847715FC1c63555982B390"
+ },
+  {
+    "label": "Кит 16 ONDO",
+    "address": "0xc979241e738a4db516B21Cf5C1bf3953010ada03"
+ },
+  {
+    "label": "Кит 17 ONDO",
+    "address": "0xCcD989da582d5552E5100e9068c9B6b0B1fCBD18"
+ },
+  {
+    "label": "Кит 18 ONDO",
+    "address": "0xe3dB5c9B702e18Ba3A5c119f0DB20503cD60c40E"
+ },
+  {
+    "label": "Кит 19 ONDO",
+    "address": "0x9507ceB0Bb2dAc8dd7dcdDf2F75D3847B5DDa39B"
+ },
+  {
+    "label": "Кит 20 ONDO",
+    "address": "0x7c2C59fC78aE40bAcCd7CC41Cedd1400DFcfA1cA"
+ },
+  {
+    "label": "Кит 21 ONDO",
+    "address": "0xBd7A508D86AF13851DbA60F8a81189eA820AEA27"
+ },
+  {
+    "label": "Кит 22 ONDO",
+    "address": "0x50E11Ee6Ecd5DC8f5Cbd06951FcA04c536e8Fb24"
+ },
+  {
+    "label": "Кит 23 ONDO",
+    "address": "0xB51Bf9029d778899d42e96ebCdc0498bd061006d"
+ },
+  {
+    "label": "Кит 24 ONDO",
+    "address": "0xd367E507282Cd1b461891bD86051F4cb6d10069B"
+ },
+  {
+    "label": "Кит 25 ONDO",
+    "address": "0xA19D991C20cc0e18c2455738e5e5B1904b5832C0"
+ },
+  {
+    "label": "Кит 26 ONDO",
+    "address": "0x41A7F817bC60298073BB84af7cbd999C94Cf402A"
+ },
+  {
+    "label": "Кит 27 ONDO",
+    "address": "0x44d5D0f3fc2E3D8FEecC5a59fA396c29272DbD4B"
+ },
+  {
+    "label": "Кит 28 ONDO",
+    "address": "0x1c0c0fE7976CB2A0B740f890a41CF0A68227859C"
+ },
+  {
+    "label": "Кит 29 ONDO",
+    "address": "0x6a23a65Cc75Bc5E5390d9CD34c4B94B6fD7308b5"
+ },
+  {
+    "label": "Кит 30 ONDO",
+    "address": "0x7593C88aD06569b8ed72BB74bbDE724b294DD1e5"
+  }
 
 
 ]
