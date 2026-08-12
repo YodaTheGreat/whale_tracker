@@ -1,6 +1,6 @@
 {
   "0x9264781948fa2827da22ccdbdcb1af877c7df465": {
-    "last_fill_time": 1786482188346,
+    "last_fill_time": 1786541565005,
     "open_positions": {
       "xyz:SPCX": {
         "size": 203.41000000000017,
@@ -47,7 +47,7 @@
     ]
   },
   "0x1e9b03ec06f463bc5d81c15e050425639cc43855": {
-    "last_fill_time": 1786503982311,
+    "last_fill_time": 1786547258715,
     "open_positions": {
       "HYPE": {
         "size": 9445.61,
@@ -61,7 +61,7 @@
     "roundtrips": []
   },
   "0xc42ec9d9156d9196f9a3887380ccfaaa518e4c8d": {
-    "last_fill_time": 1786513229839,
+    "last_fill_time": 1786522670532,
     "open_positions": {},
     "roundtrips": []
   },
@@ -91,27 +91,27 @@
     ]
   },
   "0xbeccae9ffcb69e9d42a1d4e744abf8056149562d": {
-    "last_fill_time": 1786459862408,
+    "last_fill_time": 1786470286047,
     "open_positions": {},
     "roundtrips": []
   },
   "0x7ab12f7a0925ef24927343d47199e75a91fc78aa": {
-    "last_fill_time": 1786396200838,
+    "last_fill_time": 1786455127919,
     "open_positions": {
       "HYPE": {
-        "size": -1057.58,
+        "size": -1404.79,
         "open_time": 1786344349583
       }
     },
     "roundtrips": []
   },
   "0xa84c6fd42d4e5c2e9ffbdf452041a3485b170885": {
-    "last_fill_time": 1786545096039,
+    "last_fill_time": 1786546614596,
     "open_positions": {},
     "roundtrips": []
   },
   "0x493364de7f4a39ed24f9c68ece229973f324d369": {
-    "last_fill_time": 1786377700921,
+    "last_fill_time": 1786405179366,
     "open_positions": {
       "HYPE": {
         "size": -1589.99,
@@ -121,11 +121,11 @@
     "roundtrips": []
   },
   "0xb67c4c91728e6865b216e11d54b50c75bbd3fd5f": {
-    "last_fill_time": 1786343183223,
+    "last_fill_time": 1786363373932,
     "open_positions": {
       "HYPE": {
-        "size": 1810.9900000000005,
-        "open_time": 1786332993136
+        "size": -10614.96,
+        "open_time": 1786348288172
       }
     },
     "roundtrips": [
@@ -143,6 +143,11 @@
         "coin": "HYPE",
         "close_time": 1786332993136,
         "holding_h": 0.6372122222222222
+      },
+      {
+        "coin": "HYPE",
+        "close_time": 1786348288172,
+        "holding_h": 4.248621111111111
       }
     ]
   },
