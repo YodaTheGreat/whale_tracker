@@ -1,10 +1,5 @@
 {
   "threshold_usd": 1,
-  "coins_of_interest": ["HYPE", "WLD", "NEAR", "ONDO", "TAO", "LINK"],
-  "price_hint": {}
-}
-{
-  "threshold_usd": 1,
   "coins_of_interest": ["HYPE", "WLD", "NEAR", "ONDO", "TAO", "LIT", "LINK"],
   "price_hint": {},
   "debug_ledger": true,
