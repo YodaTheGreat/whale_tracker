@@ -75,6 +75,10 @@ def get_ledger_updates(address, start_time_ms):
             "user": address,
             "startTime": start_time_ms,
         })
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        print(f"  ledger-запрос не удался для {address}: HTTP {e.code}: {body[:300]}", file=sys.stderr)
+        return []
     except Exception as e:
         print(f"  ledger-запрос не удался для {address}: {e}", file=sys.stderr)
         return []
@@ -206,12 +210,18 @@ def check_ledger_activity(label, address, last_seen_ms, threshold_usd, lookback_
     с момента последней проверки. Возвращает (сообщения, новый_timestamp)."""
     start = last_seen_ms if last_seen_ms else int(time.time() * 1000) - lookback_hours * 3600_000
     events = get_ledger_updates(address, start)
+
+    if debug:
+        print(f"  [DEBUG] {label}: тип ответа = {type(events).__name__}")
+        raw_preview = json.dumps(events, ensure_ascii=False)[:500]
+        print(f"  [DEBUG] {label}: сырой ответ (первые 500 символов) = {raw_preview}")
+
     if not isinstance(events, list):
         return [], start
 
-    if debug:
-        print(f"  [DEBUG] {label}: получено {len(events)} сырых событий")
-        for e in events[:5]:  # первые 5, чтобы не заспамить лог
+    if debug and events:
+        print(f"  [DEBUG] {label}: получено {len(events)} событий, первые 5:")
+        for e in events[:5]:
             print(f"  [DEBUG]   {json.dumps(e, ensure_ascii=False)}")
 
     messages = []
