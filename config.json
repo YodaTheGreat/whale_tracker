@@ -2,6 +2,6 @@
   "threshold_usd": 50000,
   "coins_of_interest": ["HYPE", "WLD", "NEAR", "ONDO", "TAO", "LIT", "LINK"],
   "price_hint": {},
-  "debug_ledger": true,
-  "ledger_lookback_hours": 24
+  "debug_ledger": false,
+  "ledger_lookback_hours": 6
 }
