@@ -674,7 +674,36 @@
   {
     "label": "Кит 30 ONDO",
     "address": "0x7593C88aD06569b8ed72BB74bbDE724b294DD1e5"
+ },
+  {
+    "label": "Кит 01",
+    "address": "0x6a23a65Cc75Bc5E5390d9CD34c4B94B6fD7308b5"
+ },
+  {
+    "label": "Кит 02",
+    "address": "0x645b2eeaa0a46df3c4211bebda1b2c7703e287b8"
+ },
+  {
+    "label": "Кит 03",
+    "address": "0xf822fa0fd364c573fcdb7009fcf47601bc8be01a"
+ },
+  {
+    "label": "Кит 04",
+    "address": "0x32008fcb6bbd16532afc83ca8b6c920dde22c407"
+ },
+  {
+    "label": "Кит 05",
+    "address": "0x45d26f28196d226497130c4bac709d808fed4029"
+ },
+  {
+    "label": "Кит 06",
+    "address": "0xd47587702a91731dc1089b5db0932cf820151a91"
+ },
+  {
+    "label": "Кит 07",
+    "address": "0xc8b527864ef2ad6dc49de7e99943a3a76ad48891"
   }
+
 
 
 ]
