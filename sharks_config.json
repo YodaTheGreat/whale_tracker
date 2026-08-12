@@ -1,0 +1,7 @@
+{
+  "max_holding_hours": 48,
+  "min_trade_usd": 20000,
+  "lookback_hours_first_run": 72,
+  "frequency_window_hours": 168,
+  "min_roundtrips_for_shark_tag": 2
+}
