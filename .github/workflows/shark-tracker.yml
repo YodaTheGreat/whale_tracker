@@ -1,1 +1,33 @@
+name: Shark Tracker
 
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run shark tracker
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python shark_watch.py
+
+      - name: Commit updated state
+        run: |
+          git config user.name "shark-tracker-bot"
+          git config user.email "actions@github.com"
+          git add shark_state.json
+          git diff --staged --quiet || git commit -m "update shark state"
+          git pull --rebase
+          git push
