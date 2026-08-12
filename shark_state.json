@@ -1,16 +1,49 @@
 {
   "0x9264781948fa2827da22ccdbdcb1af877c7df465": {
-    "last_fill_time": 1786348987511,
+    "last_fill_time": 1786368634169,
     "open_positions": {
       "xyz:SPCX": {
-        "size": 548.84,
+        "size": 203.41000000000017,
         "open_time": 1786291687872
       },
       "xyz:SKHX": {
         "size": -47.61,
         "open_time": 1786336510701
+      },
+      "xyz:MRVL": {
+        "size": -142.04999999999998,
+        "open_time": 1786367003337
+      },
+      "xyz:PLTR": {
+        "size": -183.519,
+        "open_time": 1786368470418
+      },
+      "xyz:SNDK": {
+        "size": -71.005,
+        "open_time": 1786368463740
       }
     },
-    "roundtrips": []
+    "roundtrips": [
+      {
+        "coin": "xyz:INTC",
+        "close_time": 1786362225096,
+        "holding_h": 0.0033933333333333333
+      },
+      {
+        "coin": "xyz:MRVL",
+        "close_time": 1786367003337,
+        "holding_h": 0.0040438888888888885
+      },
+      {
+        "coin": "xyz:PLTR",
+        "close_time": 1786368432935,
+        "holding_h": 0.0007091666666666666
+      },
+      {
+        "coin": "xyz:PLTR",
+        "close_time": 1786368470418,
+        "holding_h": 0.010411944444444444
+      }
+    ]
   }
 }
