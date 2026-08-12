@@ -64,6 +64,22 @@ def get_perp_state(address):
     return hl_post({"type": "clearinghouseState", "user": address})
 
 
+def get_ledger_updates(address, start_time_ms):
+    """Реальные события кошелька: депозиты, выводы, внутренние переводы.
+    В отличие от простого сравнения балансов, здесь видно КУДА именно
+    ушли средства (destination address) — можно проверить этот адрес
+    на Arkham и узнать, биржа это или чей-то личный кошелёк."""
+    try:
+        return hl_post({
+            "type": "userNonFundingLedgerUpdates",
+            "user": address,
+            "startTime": start_time_ms,
+        })
+    except Exception as e:
+        print(f"  ledger-запрос не удался для {address}: {e}", file=sys.stderr)
+        return []
+
+
 def get_live_prices():
     """Живые mid-цены всех монет — бесплатно, без ключа. Используется вместо
     ручного ввода цен в config.json."""
@@ -137,6 +153,75 @@ def snapshot_wallet(address, coins_of_interest):
         print(f"  перп-запрос не удался для {address}: {e}", file=sys.stderr)
 
     return snap
+
+
+def fmt_ledger_event(event, threshold_usd):
+    """Форматирует одно событие ledger (депозит/вывод/перевод) в читаемое
+    сообщение. Возвращает None, если событие ниже порога или неинтересно."""
+    delta = event.get("delta", {})
+    ev_type = delta.get("type", "unknown")
+
+    RELEVANT_TYPES = {
+        "deposit": "💰 ДЕПОЗИТ на Hyperliquid",
+        "withdraw": "🏧 ВЫВОД с Hyperliquid",
+        "internalTransfer": "↔️ ВНУТРЕННИЙ ПЕРЕВОД",
+        "accountClassTransfer": "🔀 ПЕРЕВОД спот↔перп",
+        "spotTransfer": "📤 SPOT-ПЕРЕВОД",
+    }
+    if ev_type not in RELEVANT_TYPES:
+        return None
+
+    usd = None
+    for key in ("usdc", "usd", "amount"):
+        if key in delta:
+            try:
+                usd = abs(float(delta[key]))
+            except (TypeError, ValueError):
+                pass
+            break
+
+    if usd is not None and usd < threshold_usd:
+        return None
+
+    lines = [RELEVANT_TYPES[ev_type]]
+    if usd is not None:
+        lines.append(f"Сумма: {fmt_usd(usd)}")
+
+    # Адрес назначения — самое ценное поле для этого улучшения:
+    # можно вручную проверить на Arkham, биржа это или нет
+    destination = delta.get("destination") or delta.get("user")
+    if destination:
+        lines.append(f"Куда: <code>{destination}</code>")
+        lines.append(f'<a href="https://intel.arkm.com/explorer/address/{destination}">Проверить на Arkham</a>')
+
+    token = delta.get("token")
+    if token:
+        lines.append(f"Токен: {token}")
+
+    return "\n".join(lines)
+
+
+def check_ledger_activity(label, address, last_seen_ms, threshold_usd):
+    """Проверяет реальные ledger-события (не просто изменение баланса)
+    с момента последней проверки. Возвращает (сообщения, новый_timestamp)."""
+    start = last_seen_ms if last_seen_ms else int(time.time() * 1000) - 3600_000
+    events = get_ledger_updates(address, start)
+    if not isinstance(events, list):
+        return [], start
+
+    messages = []
+    max_time = start
+    for event in events:
+        ev_time = event.get("time", 0)
+        if ev_time <= start:
+            continue
+        max_time = max(max_time, ev_time)
+        formatted = fmt_ledger_event(event, threshold_usd)
+        if formatted:
+            header = f"<b>{label}</b>\n<code>{address[:6]}...{address[-4:]}</code>\n"
+            messages.append(header + formatted)
+
+    return messages, max_time
 
 
 def diff_and_alert(label, address, prev, curr, threshold_usd, coin_price_hint=None):
@@ -223,11 +308,23 @@ def main():
         if prev is not None:
             msg = diff_and_alert(label, address, prev, curr, threshold_usd, price_hint)
             if msg:
-                print("  -> изменение найдено, отправляю в Telegram")
+                print("  -> изменение баланса найдено, отправляю в Telegram")
                 send_telegram(token, chat_id, msg)
                 sent_any = True
         else:
             print("  первый прогон для этого адреса — снимок сохранён, без алерта")
+
+        # Проверяем реальные события (депозит/вывод/перевод) — отдельно
+        # от простого сравнения балансов, чтобы видеть КУДА уходят средства
+        last_ledger_ms = state.get(f"{address}__ledger_ts")
+        ledger_msgs, new_ledger_ts = check_ledger_activity(
+            label, address, last_ledger_ms, threshold_usd
+        )
+        new_state[f"{address}__ledger_ts"] = new_ledger_ts
+        for msg in ledger_msgs:
+            print("  -> событие перевода найдено, отправляю в Telegram")
+            send_telegram(token, chat_id, msg)
+            sent_any = True
 
         time.sleep(0.3)  # вежливая пауза между запросами
 
