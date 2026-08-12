@@ -94,7 +94,10 @@ def main():
         "lookback_hours_first_run": 72,
         "frequency_window_hours": 168,
         "min_roundtrips_for_shark_tag": 2,
+        "watchlist_coins": ["HYPE", "WLD", "NEAR", "ONDO", "TAO", "LIT", "LINK"],
+        "alert_on_open": True,
     })
+    watchlist = set(config.get("watchlist_coins", []))
     wallets = load_json(WALLETS_FILE, [])
     state = load_json(STATE_FILE, {})
 
@@ -129,6 +132,10 @@ def main():
             fill_time = fill.get("time", now_ms)
             notional = sz * px
 
+            # только монеты из вотчлиста (пропускаем акции типа xyz:PLTR и всё лишнее)
+            if watchlist and coin not in watchlist:
+                continue
+
             if notional < config["min_trade_usd"]:
                 continue
 
@@ -137,6 +144,18 @@ def main():
 
             if pos is None:
                 wstate["open_positions"][coin] = {"size": signed_sz, "open_time": fill_time}
+                if config.get("alert_on_open", True):
+                    direction = "LONG" if signed_sz > 0 else "SHORT"
+                    msg = (
+                        f"<b>🐋 ОТКРЫТИЕ</b>\n"
+                        f"Кошелёк: {label}\n"
+                        f"Токен: {coin}\n"
+                        f"Направление: {direction}\n"
+                        f"Объём: ${notional:,.0f}\n"
+                        f"Цена входа: {px}\n"
+                        f"https://hypurrscan.io/address/{address}"
+                    )
+                    send_telegram(token, chat_id, msg)
                 continue
 
             new_size = pos["size"] + signed_sz
