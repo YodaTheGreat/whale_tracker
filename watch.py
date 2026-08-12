@@ -159,48 +159,59 @@ def snapshot_wallet(address, coins_of_interest):
     return snap
 
 
-def fmt_ledger_event(event, threshold_usd):
-    """Форматирует одно событие ledger (депозит/вывод/перевод) в читаемое
-    сообщение. Возвращает None, если событие ниже порога или неинтересно."""
+def fmt_ledger_event(event, tracked_address, threshold_usd):
+    """Форматирует одно событие ledger (перевод USDC/токена между адресами
+    или площадками) в читаемое сообщение. Возвращает None, если событие
+    ниже порога или неинтересно.
+
+    Реальный формат Hyperliquid API (подтверждено на живых данных):
+    delta.type == "send" почти всегда, дальше смотрим на поля:
+    - user: отправитель
+    - destination: получатель
+    - sourceDex / destinationDex: "spot", "xyz" (перп-маржа), "" (вовне)
+    - token, amount, usdcValue
+    Если destinationDex пустая строка "" — это уход СО счёта Hyperliquid
+    вовне (на другой адрес/биржу) — самое интересное для нас событие.
+    """
     delta = event.get("delta", {})
     ev_type = delta.get("type", "unknown")
 
-    RELEVANT_TYPES = {
-        "deposit": "💰 ДЕПОЗИТ на Hyperliquid",
-        "withdraw": "🏧 ВЫВОД с Hyperliquid",
-        "internalTransfer": "↔️ ВНУТРЕННИЙ ПЕРЕВОД",
-        "accountClassTransfer": "🔀 ПЕРЕВОД спот↔перп",
-        "spotTransfer": "📤 SPOT-ПЕРЕВОД",
-    }
-    if ev_type not in RELEVANT_TYPES:
-        return None
+    if ev_type != "send":
+        return None  # другие типы событий (liquidation, funding и т.п.) пока не обрабатываем
 
-    usd = None
-    for key in ("usdc", "usd", "amount"):
-        if key in delta:
-            try:
-                usd = abs(float(delta[key]))
-            except (TypeError, ValueError):
-                pass
-            break
+    try:
+        usd = abs(float(delta.get("usdcValue", delta.get("amount", 0))))
+    except (TypeError, ValueError):
+        usd = None
 
     if usd is not None and usd < threshold_usd:
         return None
 
-    lines = [RELEVANT_TYPES[ev_type]]
+    sender = (delta.get("user") or "").lower()
+    destination = delta.get("destination")
+    is_incoming = destination and destination.lower() == tracked_address.lower()
+
+    source_dex = delta.get("sourceDex", "")
+    dest_dex = delta.get("destinationDex", "")
+    token = delta.get("token", "")
+
+    direction = "⬅️ ПРИШЛО" if is_incoming else "➡️ УШЛО"
+    if dest_dex == "" and not is_incoming:
+        kind = f"{direction} — ВЫВОД со счёта Hyperliquid на внешний адрес"
+    elif source_dex != dest_dex:
+        kind = f"{direction} — перевод {source_dex or '?'} → {dest_dex or '?'} (внутри HL)"
+    else:
+        kind = f"{direction} — перевод между адресами (внутри Hyperliquid)"
+
+    lines = [kind]
     if usd is not None:
-        lines.append(f"Сумма: {fmt_usd(usd)}")
+        lines.append(f"Сумма: {fmt_usd(usd)} {token}".strip())
 
-    # Адрес назначения — самое ценное поле для этого улучшения:
-    # можно вручную проверить на Arkham, биржа это или нет
-    destination = delta.get("destination") or delta.get("user")
-    if destination:
-        lines.append(f"Куда: <code>{destination}</code>")
-        lines.append(f'<a href="https://intel.arkm.com/explorer/address/{destination}">Проверить на Arkham</a>')
-
-    token = delta.get("token")
-    if token:
-        lines.append(f"Токен: {token}")
+    other_party = sender if is_incoming else destination
+    if other_party:
+        label = "От кого" if is_incoming else "Куда"
+        lines.append(f"{label}: <code>{other_party}</code>")
+        lines.append(f'<a href="https://intel.arkm.com/explorer/address/{other_party}">Проверить на Arkham</a>')
 
     return "\n".join(lines)
 
@@ -231,7 +242,7 @@ def check_ledger_activity(label, address, last_seen_ms, threshold_usd, lookback_
         if ev_time <= start:
             continue
         max_time = max(max_time, ev_time)
-        formatted = fmt_ledger_event(event, threshold_usd)
+        formatted = fmt_ledger_event(event, address, threshold_usd)
         if formatted:
             header = f"<b>{label}</b>\n<code>{address[:6]}...{address[-4:]}</code>\n"
             messages.append(header + formatted)
