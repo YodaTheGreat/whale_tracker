@@ -106,9 +106,15 @@ def send_telegram(token, chat_id, text):
     req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
+            body = resp.read().decode("utf-8")
+            print(f"  [TELEGRAM] HTTP {resp.status}, ответ: {body[:200]}")
             return resp.status == 200
     except urllib.error.HTTPError as e:
-        print(f"Telegram error: {e.read().decode()}", file=sys.stderr)
+        body = e.read().decode("utf-8", errors="replace")
+        print(f"  [TELEGRAM] ОШИБКА HTTP {e.code}: {body[:300]}", file=sys.stderr)
+        return False
+    except Exception as e:
+        print(f"  [TELEGRAM] ОШИБКА: {e}", file=sys.stderr)
         return False
 
 
@@ -216,9 +222,12 @@ def fmt_ledger_event(event, tracked_address, threshold_usd):
     return "\n".join(lines)
 
 
-def check_ledger_activity(label, address, last_seen_ms, threshold_usd, lookback_hours=1, debug=False):
+def check_ledger_activity(label, address, last_seen_ms, seen_hashes, threshold_usd, lookback_hours=1, debug=False):
     """Проверяет реальные ledger-события (не просто изменение баланса)
-    с момента последней проверки. Возвращает (сообщения, новый_timestamp)."""
+    с момента последней проверки. Дедупликация по hash события (надёжнее,
+    чем сравнение timestamp — избегает пограничных ошибок повторной
+    обработки/пропуска одного и того же события).
+    Возвращает (сообщения, новый_timestamp, новый_набор_хэшей)."""
     start = last_seen_ms if last_seen_ms else int(time.time() * 1000) - lookback_hours * 3600_000
     events = get_ledger_updates(address, start)
 
@@ -228,26 +237,39 @@ def check_ledger_activity(label, address, last_seen_ms, threshold_usd, lookback_
         print(f"  [DEBUG] {label}: сырой ответ (первые 500 символов) = {raw_preview}")
 
     if not isinstance(events, list):
-        return [], start
+        return [], start, seen_hashes
 
     if debug and events:
         print(f"  [DEBUG] {label}: получено {len(events)} событий, первые 5:")
         for e in events[:5]:
             print(f"  [DEBUG]   {json.dumps(e, ensure_ascii=False)}")
 
+    seen_set = set(seen_hashes)
     messages = []
     max_time = start
+    new_hashes = list(seen_hashes)
+
     for event in events:
         ev_time = event.get("time", 0)
-        if ev_time <= start:
-            continue
+        ev_hash = event.get("hash")
         max_time = max(max_time, ev_time)
+
+        if ev_hash and ev_hash in seen_set:
+            continue  # уже обработано в прошлый раз — пропускаем без вопросов
+
+        if ev_hash:
+            seen_set.add(ev_hash)
+            new_hashes.append(ev_hash)
+
         formatted = fmt_ledger_event(event, address, threshold_usd)
         if formatted:
             header = f"<b>{label}</b>\n<code>{address[:6]}...{address[-4:]}</code>\n"
             messages.append(header + formatted)
 
-    return messages, max_time
+    # Храним не больше последних 300 хэшей на кошелёк, чтобы файл не рос бесконечно
+    new_hashes = new_hashes[-300:]
+
+    return messages, max_time, new_hashes
 
 
 def diff_and_alert(label, address, prev, curr, threshold_usd, coin_price_hint=None):
@@ -320,6 +342,9 @@ def main():
         print("Не заданы TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID. См. README.md")
         sys.exit(1)
 
+    print(f"[DEBUG] Токен получен: {'да, длина ' + str(len(token)) if token else 'НЕТ'}")
+    print(f"[DEBUG] Chat ID получен: {chat_id if chat_id else 'НЕТ'}")
+
     state = load_json(STATE_FILE, {})
     new_state = {}
     sent_any = False
@@ -345,11 +370,13 @@ def main():
         # Проверяем реальные события (депозит/вывод/перевод) — отдельно
         # от простого сравнения балансов, чтобы видеть КУДА уходят средства
         last_ledger_ms = state.get(f"{address}__ledger_ts")
-        ledger_msgs, new_ledger_ts = check_ledger_activity(
-            label, address, last_ledger_ms, threshold_usd,
+        seen_hashes = state.get(f"{address}__ledger_hashes", [])
+        ledger_msgs, new_ledger_ts, new_hashes = check_ledger_activity(
+            label, address, last_ledger_ms, seen_hashes, threshold_usd,
             lookback_hours=ledger_lookback_hours, debug=debug_ledger
         )
         new_state[f"{address}__ledger_ts"] = new_ledger_ts
+        new_state[f"{address}__ledger_hashes"] = new_hashes
         for msg in ledger_msgs:
             print("  -> событие перевода найдено, отправляю в Telegram")
             send_telegram(token, chat_id, msg)
