@@ -1,6 +1,6 @@
 {
   "0x9264781948fa2827da22ccdbdcb1af877c7df465": {
-    "last_fill_time": 1786423151279,
+    "last_fill_time": 1786482188346,
     "open_positions": {
       "xyz:SPCX": {
         "size": 203.41000000000017,
@@ -47,22 +47,26 @@
     ]
   },
   "0x1e9b03ec06f463bc5d81c15e050425639cc43855": {
-    "last_fill_time": 1786415040109,
+    "last_fill_time": 1786503982311,
     "open_positions": {
       "HYPE": {
         "size": 9445.61,
         "open_time": 1786306643068
+      },
+      "LIT": {
+        "size": 2189.0,
+        "open_time": 1786415047509
       }
     },
     "roundtrips": []
   },
   "0xc42ec9d9156d9196f9a3887380ccfaaa518e4c8d": {
-    "last_fill_time": 1786494630900,
+    "last_fill_time": 1786513229839,
     "open_positions": {},
     "roundtrips": []
   },
   "0x408d807d1dbb778f59a9c088e56d4c27bdd362ac": {
-    "last_fill_time": 1786383006894,
+    "last_fill_time": 1786545269888,
     "open_positions": {
       "HYPE": {
         "size": -357.5400000000001,
@@ -87,36 +91,41 @@
     ]
   },
   "0xbeccae9ffcb69e9d42a1d4e744abf8056149562d": {
-    "last_fill_time": 1786443976049,
+    "last_fill_time": 1786459862408,
     "open_positions": {},
     "roundtrips": []
   },
   "0x7ab12f7a0925ef24927343d47199e75a91fc78aa": {
-    "last_fill_time": 1786371114780,
+    "last_fill_time": 1786396200838,
     "open_positions": {
       "HYPE": {
-        "size": -474.79,
+        "size": -1057.58,
         "open_time": 1786344349583
       }
     },
     "roundtrips": []
   },
   "0xa84c6fd42d4e5c2e9ffbdf452041a3485b170885": {
-    "last_fill_time": 1786478607810,
+    "last_fill_time": 1786545096039,
     "open_positions": {},
     "roundtrips": []
   },
   "0x493364de7f4a39ed24f9c68ece229973f324d369": {
-    "last_fill_time": 1786337752324,
-    "open_positions": {},
+    "last_fill_time": 1786377700921,
+    "open_positions": {
+      "HYPE": {
+        "size": -1589.99,
+        "open_time": 1786369213023
+      }
+    },
     "roundtrips": []
   },
   "0xb67c4c91728e6865b216e11d54b50c75bbd3fd5f": {
-    "last_fill_time": 1786320586140,
+    "last_fill_time": 1786343183223,
     "open_positions": {
       "HYPE": {
-        "size": 2614.9500000000003,
-        "open_time": 1786315058405
+        "size": 1810.9900000000005,
+        "open_time": 1786332993136
       }
     },
     "roundtrips": [
@@ -124,18 +133,28 @@
         "coin": "HYPE",
         "close_time": 1786315058405,
         "holding_h": 9.26657611111111
+      },
+      {
+        "coin": "HYPE",
+        "close_time": 1786330699172,
+        "holding_h": 4.3446575
+      },
+      {
+        "coin": "HYPE",
+        "close_time": 1786332993136,
+        "holding_h": 0.6372122222222222
       }
     ]
   },
   "0x687faf204c6fc60918728d3a001c80aec1240d49": {
-    "last_fill_time": 1786518702795,
+    "last_fill_time": 1786541402094,
     "open_positions": {
       "LIT": {
         "size": -67304.0,
         "open_time": 1786463252431
       },
       "HYPE": {
-        "size": -323.6199999999999,
+        "size": -2119.8999999999996,
         "open_time": 1786463445281
       }
     },
