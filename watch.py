@@ -263,7 +263,7 @@ def check_ledger_activity(label, address, last_seen_ms, seen_hashes, threshold_u
 
         formatted = fmt_ledger_event(event, address, threshold_usd)
         if formatted:
-            header = f"<b>{label}</b>\n<code>{address[:6]}...{address[-4:]}</code>\n"
+            header = f"<b>{label}</b>\n<code>{address}</code>\n"
             messages.append(header + formatted)
 
     # Храним не больше последних 300 хэшей на кошелёк, чтобы файл не рос бесконечно
@@ -317,7 +317,7 @@ def diff_and_alert(label, address, prev, curr, threshold_usd, coin_price_hint=No
     if not alerts:
         return None
 
-    header = f"<b>{label}</b>\n<code>{address[:6]}...{address[-4:]}</code>\n"
+    header = f"<b>{label}</b>\n<code>{address}</code>\n"
     return header + "\n".join(alerts)
 
 
