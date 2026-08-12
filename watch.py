@@ -201,13 +201,18 @@ def fmt_ledger_event(event, threshold_usd):
     return "\n".join(lines)
 
 
-def check_ledger_activity(label, address, last_seen_ms, threshold_usd):
+def check_ledger_activity(label, address, last_seen_ms, threshold_usd, lookback_hours=1, debug=False):
     """Проверяет реальные ledger-события (не просто изменение баланса)
     с момента последней проверки. Возвращает (сообщения, новый_timestamp)."""
-    start = last_seen_ms if last_seen_ms else int(time.time() * 1000) - 3600_000
+    start = last_seen_ms if last_seen_ms else int(time.time() * 1000) - lookback_hours * 3600_000
     events = get_ledger_updates(address, start)
     if not isinstance(events, list):
         return [], start
+
+    if debug:
+        print(f"  [DEBUG] {label}: получено {len(events)} сырых событий")
+        for e in events[:5]:  # первые 5, чтобы не заспамить лог
+            print(f"  [DEBUG]   {json.dumps(e, ensure_ascii=False)}")
 
     messages = []
     max_time = start
@@ -284,6 +289,8 @@ def main():
     chat_id = os.environ.get("TELEGRAM_CHAT_ID") or config.get("telegram_chat_id")
     threshold_usd = config.get("threshold_usd", 20000)
     coins_of_interest = config.get("coins_of_interest")  # None = все монеты
+    debug_ledger = config.get("debug_ledger", False)
+    ledger_lookback_hours = config.get("ledger_lookback_hours", 1)
     price_hint = get_live_prices()  # живые цены с Hyperliquid, бесплатно
     if not price_hint:
         price_hint = config.get("price_hint", {})  # запасной вариант из конфига
@@ -318,7 +325,8 @@ def main():
         # от простого сравнения балансов, чтобы видеть КУДА уходят средства
         last_ledger_ms = state.get(f"{address}__ledger_ts")
         ledger_msgs, new_ledger_ts = check_ledger_activity(
-            label, address, last_ledger_ms, threshold_usd
+            label, address, last_ledger_ms, threshold_usd,
+            lookback_hours=ledger_lookback_hours, debug=debug_ledger
         )
         new_state[f"{address}__ledger_ts"] = new_ledger_ts
         for msg in ledger_msgs:
