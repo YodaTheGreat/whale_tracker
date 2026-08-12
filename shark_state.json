@@ -1,6 +1,6 @@
 {
   "0x9264781948fa2827da22ccdbdcb1af877c7df465": {
-    "last_fill_time": 1786549910931,
+    "last_fill_time": 1786557748286,
     "open_positions": {
       "xyz:SPCX": {
         "size": 203.41000000000017,
@@ -47,7 +47,7 @@
     ]
   },
   "0x1e9b03ec06f463bc5d81c15e050425639cc43855": {
-    "last_fill_time": 1786547367999,
+    "last_fill_time": 1786555589291,
     "open_positions": {
       "HYPE": {
         "size": 9445.61,
@@ -61,12 +61,12 @@
     "roundtrips": []
   },
   "0xc42ec9d9156d9196f9a3887380ccfaaa518e4c8d": {
-    "last_fill_time": 1786537848386,
+    "last_fill_time": 1786541794638,
     "open_positions": {},
     "roundtrips": []
   },
   "0x408d807d1dbb778f59a9c088e56d4c27bdd362ac": {
-    "last_fill_time": 1786549839999,
+    "last_fill_time": 1786555276102,
     "open_positions": {
       "HYPE": {
         "size": -357.5400000000001,
@@ -91,7 +91,7 @@
     ]
   },
   "0xbeccae9ffcb69e9d42a1d4e744abf8056149562d": {
-    "last_fill_time": 1786520097265,
+    "last_fill_time": 1786530760081,
     "open_positions": {},
     "roundtrips": []
   },
@@ -106,12 +106,12 @@
     "roundtrips": []
   },
   "0xa84c6fd42d4e5c2e9ffbdf452041a3485b170885": {
-    "last_fill_time": 1786548017493,
+    "last_fill_time": 1786557039077,
     "open_positions": {},
     "roundtrips": []
   },
   "0x493364de7f4a39ed24f9c68ece229973f324d369": {
-    "last_fill_time": 1786471031108,
+    "last_fill_time": 1786485667896,
     "open_positions": {
       "HYPE": {
         "size": -1589.99,
@@ -121,10 +121,10 @@
     "roundtrips": []
   },
   "0xb67c4c91728e6865b216e11d54b50c75bbd3fd5f": {
-    "last_fill_time": 1786385755998,
+    "last_fill_time": 1786394274482,
     "open_positions": {
       "HYPE": {
-        "size": -8674.640000000001,
+        "size": -6620.620000000002,
         "open_time": 1786348288172
       }
     },
