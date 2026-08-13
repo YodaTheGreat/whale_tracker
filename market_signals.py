@@ -14,9 +14,11 @@ market_signals.py — мониторинг "агрегированных умн�
    короткий интервал = крупный приток или отток капитала, часто предшествует
    волатильному движению.
 
-Источник: Bybit public API (api.bybit.com), без ключа, бесплатно. (Изначально
-использовался Binance, но Binance блокирует запросы с IP облачных провайдеров,
-включая GitHub Actions — отсюда переход на Bybit.)
+Источник: Hyperliquid public API (api.hyperliquid.xyz/info), без ключа,
+бесплатно. (Изначально пробовались Binance и Bybit, но обе биржи блокируют
+запросы с IP облачных провайдеров вроде GitHub Actions — HTTP 451/403.
+Hyperliquid таких ограничений не имеет — тот же источник, что уже успешно
+использует whale/shark трекер.)
 
 Состояние (предыдущее значение OI для расчёта % изменения) хранится в
 market_state.json — как и у shark/whale трекеров, коммитится в приватный
@@ -31,7 +33,7 @@ import time
 import urllib.request
 from pathlib import Path
 
-TICKERS_URL = "https://api.bybit.com/v5/market/tickers"
+INFO_URL = "https://api.hyperliquid.xyz/info"
 
 STATE_FILE = Path(__file__).parent / "data" / "market_state.json"
 CONFIG_FILE = Path(__file__).parent / "data" / "market_config.json"
@@ -58,6 +60,17 @@ def http_get(url, params):
         return json.loads(resp.read().decode("utf-8"))
 
 
+def http_post(url, body):
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
 def send_telegram(token, chat_id, text):
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     body = json.dumps({"chat_id": chat_id, "text": text, "parse_mode": "HTML"}).encode("utf-8")
@@ -70,10 +83,10 @@ def send_telegram(token, chat_id, text):
 
 def main():
     config = load_json(CONFIG_FILE, {
-        "symbols": ["LINKUSDT"],
-        "funding_extreme_pct": 0.05,     # % за интервал финансирования (обычно 8ч на Binance)
-        "oi_change_alert_pct": 3.0,      # % изменения OI за один прогон (5 минут)
-        "min_oi_usd_to_alert": 5_000_000  # не спамить на мелких/низколиквидных монетах
+        "symbols": ["LINK"],
+        "funding_extreme_pct": 0.01,      # Hyperliquid funding обычно расчитывается за 1 час, пороги меньше, чем на CEX за 8ч
+        "oi_change_alert_pct": 3.0,
+        "min_oi_usd_to_alert": 5_000_000
     })
     state = load_json(STATE_FILE, {})
 
@@ -82,24 +95,27 @@ def main():
     if not token or not chat_id:
         raise RuntimeError("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID не заданы")
 
+    try:
+        meta, asset_ctxs = http_post(INFO_URL, {"type": "metaAndAssetCtxs"})
+    except Exception as e:
+        print(f"[WARN] не удалось получить metaAndAssetCtxs: {e}")
+        return
+
+    universe = meta.get("universe", [])
+    name_to_index = {a["name"]: i for i, a in enumerate(universe)}
+
     for symbol in config["symbols"]:
         print(f"Проверяю {symbol}...")
 
-        try:
-            resp = http_get(TICKERS_URL, {"category": "linear", "symbol": symbol})
-        except Exception as e:
-            print(f"  [WARN] запрос не удался для {symbol}: {e}")
+        idx = name_to_index.get(symbol)
+        if idx is None:
+            print(f"  [WARN] монета {symbol} не найдена в Hyperliquid universe")
             continue
 
-        result_list = resp.get("result", {}).get("list", [])
-        if not result_list:
-            print(f"  [WARN] пустой ответ для {symbol}: {resp}")
-            continue
-
-        ticker = result_list[0]
-        funding_rate_pct = float(ticker.get("fundingRate", 0)) * 100
-        mark_price = float(ticker.get("markPrice", 0))
-        open_interest = float(ticker.get("openInterest", 0))
+        ctx = asset_ctxs[idx]
+        funding_rate_pct = float(ctx.get("funding", 0)) * 100
+        mark_price = float(ctx.get("markPx", 0))
+        open_interest = float(ctx.get("openInterest", 0))
         oi_usd = open_interest * mark_price
 
         prev = state.get(symbol, {})
