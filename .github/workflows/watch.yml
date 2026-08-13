@@ -2,41 +2,37 @@ name: Whale Watch
 
 on:
   schedule:
-    # каждые 15 минут (UTC). GitHub может задержать запуск на пару минут
-    # в пиковые нагрузки — это нормально для бесплатного тира.
     - cron: "*/15 * * * *"
-  workflow_dispatch: {}  # позволяет запускать вручную кнопкой в интерфейсе
+  workflow_dispatch: {}
 
 jobs:
-  watch:
+  run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout data repo
+        uses: actions/checkout@v4
+        with:
+          repository: YodaTheGreat/whale_tracker_data
+          token: ${{ secrets.DATA_REPO_TOKEN }}
+          path: data
+
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
-      # Восстанавливаем last_state.json из кэша между запусками,
-      # чтобы скрипт помнил предыдущие балансы кошельков
-      - uses: actions/cache@v4
-        with:
-          path: last_state.json
-          key: whale-state-${{ github.run_id }}
-          restore-keys: |
-            whale-state-
-
-      - name: Run watcher
+      - name: Run whale tracker
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python watch.py
 
-      - name: Commit updated state
+      - name: Commit updated state to data repo
         run: |
-          git config user.name "whale-watch-bot"
+          cd data
+          git config user.name "whale-tracker-bot"
           git config user.email "actions@github.com"
           git add last_state.json
-          git diff --staged --quiet || git commit -m "update state [skip ci]"
-          git pull --rebase --autostash origin main
-          git push
+          git diff --staged --quiet || git commit -m "update whale state"
+          git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
