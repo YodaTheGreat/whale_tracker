@@ -26,9 +26,9 @@ import urllib.error
 from pathlib import Path
 
 HL_API_URL = "https://api.hyperliquid.xyz/info"
-STATE_FILE = Path(__file__).parent / "last_state.json"
-WALLETS_FILE = Path(__file__).parent / "wallets.json"
-CONFIG_FILE = Path(__file__).parent / "config.json"
+STATE_FILE = Path(__file__).parent / "data" / "last_state.json"
+WALLETS_FILE = Path(__file__).parent / "data" / "wallets.json"
+CONFIG_FILE = Path(__file__).parent / "data" / "config.json"
 
 
 def load_json(path, default):
