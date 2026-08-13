@@ -31,9 +31,9 @@ import urllib.request
 from pathlib import Path
 
 API_URL = "https://api.hyperliquid.xyz/info"
-STATE_FILE = Path("shark_state.json")
-CONFIG_FILE = Path("sharks_config.json")
-WALLETS_FILE = Path("sharks_wallets.json")
+STATE_FILE = Path("data/shark_state.json")
+CONFIG_FILE = Path("data/sharks_config.json")
+WALLETS_FILE = Path("data/sharks_wallets.json")
 
 
 def load_json(path, default):
