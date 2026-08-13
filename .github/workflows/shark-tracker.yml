@@ -8,10 +8,15 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Checkout data repo
+        uses: actions/checkout@v4
+        with:
+          repository: YodaTheGreat/whale_tracker_data
+          token: ${{ secrets.DATA_REPO_TOKEN }}
+          path: data
 
       - uses: actions/setup-python@v5
         with:
@@ -23,11 +28,11 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python shark_watch.py
 
-      - name: Commit updated state
+      - name: Commit updated state to data repo
         run: |
+          cd data
           git config user.name "shark-tracker-bot"
           git config user.email "actions@github.com"
           git add shark_state.json
           git diff --staged --quiet || git commit -m "update shark state"
-          git pull --rebase
-          git push
+          git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
