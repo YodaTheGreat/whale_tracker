@@ -1024,68 +1024,68 @@
       {
         "coin": "BTC",
         "szi": -51.469,
-        "notional_usd": 3261744.937,
-        "unrealized_pnl": -146761.578788
+        "notional_usd": 3288920.569,
+        "unrealized_pnl": -173937.210788
       },
       {
         "coin": "ETH",
         "szi": -2458.8516,
-        "notional_usd": 4611822.06096,
-        "unrealized_pnl": -249114.783857
+        "notional_usd": 4666408.56648,
+        "unrealized_pnl": -303701.289377
       },
       {
         "coin": "SOL",
-        "szi": -9530.9,
-        "notional_usd": 718734.6999,
-        "unrealized_pnl": 28460.348298
+        "szi": -9458.13,
+        "notional_usd": 721712.06778,
+        "unrealized_pnl": 19778.022473
       },
       {
         "coin": "BNB",
         "szi": -746.73,
-        "notional_usd": 455324.59134,
-        "unrealized_pnl": -21829.6346
+        "notional_usd": 458566.893,
+        "unrealized_pnl": -25071.93626
       },
       {
         "coin": "TAO",
         "szi": -31.618,
-        "notional_usd": 6319.80584,
-        "unrealized_pnl": 1745.23612
+        "notional_usd": 6329.60742,
+        "unrealized_pnl": 1735.43454
       },
       {
         "coin": "HYPE",
-        "szi": -128348.9,
-        "notional_usd": 7178682.3259,
-        "unrealized_pnl": 780748.153696
+        "szi": -129154.56,
+        "notional_usd": 7383895.34976,
+        "unrealized_pnl": 620862.024762
       },
       {
         "coin": "PAXG",
         "szi": -244.065,
-        "notional_usd": 1074178.878,
-        "unrealized_pnl": -60130.578148
+        "notional_usd": 1073739.561,
+        "unrealized_pnl": -59691.261148
       },
       {
         "coin": "PUMP",
-        "szi": -319739006.0,
-        "notional_usd": 875765.137434,
-        "unrealized_pnl": -25220.265693
+        "szi": -312411431.0,
+        "notional_usd": 872565.126783,
+        "unrealized_pnl": -40552.885778
       },
       {
         "coin": "ASTER",
         "szi": 45776.0,
-        "notional_usd": 27522.36224,
-        "unrealized_pnl": -285.20381
+        "notional_usd": 27672.96528,
+        "unrealized_pnl": -134.60077
       },
       {
         "coin": "ZEC",
         "szi": -30.68,
-        "notional_usd": 15030.825368,
-        "unrealized_pnl": -439.830468
+        "notional_usd": 15245.5056,
+        "unrealized_pnl": -654.5107
       },
       {
         "coin": "XMR",
-        "szi": -1969.63,
-        "notional_usd": 771444.9821,
-        "unrealized_pnl": 5265.699121
+        "szi": -1899.27,
+        "notional_usd": 751712.0733,
+        "unrealized_pnl": -2729.468878
       }
     ]
   },
@@ -1104,68 +1104,68 @@
       {
         "coin": "BTC",
         "szi": -362.75419,
-        "notional_usd": 22988821.28287,
-        "unrealized_pnl": -348535.304465
+        "notional_usd": 23180355.49519,
+        "unrealized_pnl": -540069.516785
       },
       {
         "coin": "ETH",
         "szi": -19017.2454,
-        "notional_usd": 35668745.47224,
-        "unrealized_pnl": -1641481.044611
+        "notional_usd": 36090928.32012,
+        "unrealized_pnl": -2063663.892491
       },
       {
         "coin": "SOL",
         "szi": -66376.01,
-        "notional_usd": 5005481.29011,
-        "unrealized_pnl": 41039.160427
+        "notional_usd": 5064887.81906,
+        "unrealized_pnl": -18367.368523
       },
       {
         "coin": "LTC",
         "szi": -0.01,
-        "notional_usd": 0.44881,
-        "unrealized_pnl": 0.018211
+        "notional_usd": 0.44993,
+        "unrealized_pnl": 0.017091
       },
       {
         "coin": "LINK",
         "szi": -107242.3,
-        "notional_usd": 929511.91102,
-        "unrealized_pnl": -20988.997986
+        "notional_usd": 942069.98435,
+        "unrealized_pnl": -33547.071316
       },
       {
         "coin": "ADA",
         "szi": 100.0,
-        "notional_usd": 18.204,
-        "unrealized_pnl": 0.797
+        "notional_usd": 18.396,
+        "unrealized_pnl": 0.989
       },
       {
         "coin": "NEAR",
         "szi": 10.0,
-        "notional_usd": 16.366,
-        "unrealized_pnl": -2.331
+        "notional_usd": 16.66,
+        "unrealized_pnl": -2.037
       },
       {
         "coin": "HYPE",
         "szi": -746474.23,
-        "notional_usd": 41751050.15813,
-        "unrealized_pnl": 7372688.552927
+        "notional_usd": 42677424.67756,
+        "unrealized_pnl": 6446314.033497
       },
       {
         "coin": "PAXG",
         "szi": -93.068,
-        "notional_usd": 409610.8816,
-        "unrealized_pnl": -19425.889799
+        "notional_usd": 409443.3592,
+        "unrealized_pnl": -19258.367399
       },
       {
         "coin": "PUMP",
         "szi": -237394.0,
-        "notional_usd": 650.222166,
-        "unrealized_pnl": -158.949077
+        "notional_usd": 663.041442,
+        "unrealized_pnl": -171.768353
       },
       {
         "coin": "ZEC",
         "szi": -2.61,
-        "notional_usd": 1278.697986,
-        "unrealized_pnl": -58.247961
+        "notional_usd": 1296.9351,
+        "unrealized_pnl": -76.485075
       }
     ]
   },
@@ -1182,20 +1182,20 @@
       {
         "coin": "BTC",
         "szi": 452.49928,
-        "notional_usd": 28675784.37216,
-        "unrealized_pnl": -416850.35134
+        "notional_usd": 28915156.49128,
+        "unrealized_pnl": -177478.23222
       },
       {
         "coin": "ETH",
         "szi": 11267.9513,
-        "notional_usd": 21133042.66315,
-        "unrealized_pnl": -189537.70365
+        "notional_usd": 21384317.97714,
+        "unrealized_pnl": 61737.61034
       },
       {
         "coin": "ZEC",
         "szi": -24295.6,
-        "notional_usd": 11902657.396,
-        "unrealized_pnl": 2344965.489455
+        "notional_usd": 12072726.596,
+        "unrealized_pnl": 2174896.289455
       }
     ]
   },
@@ -1215,272 +1215,272 @@
       {
         "coin": "BTC",
         "szi": -269.4,
-        "notional_usd": 17072416.8,
-        "unrealized_pnl": 3900430.136331
+        "notional_usd": 17215737.6,
+        "unrealized_pnl": 3757109.336331
       },
       {
         "coin": "ETH",
         "szi": -5555.0,
-        "notional_usd": 10418402.5,
-        "unrealized_pnl": 2599084.579583
+        "notional_usd": 10543390.0,
+        "unrealized_pnl": 2474097.079583
       },
       {
         "coin": "ATOM",
         "szi": -24600.0,
-        "notional_usd": 34321.92,
-        "unrealized_pnl": 215946.64346
+        "notional_usd": 34454.76,
+        "unrealized_pnl": 215813.80346
       },
       {
         "coin": "SOL",
         "szi": -25120.0,
-        "notional_usd": 1894248.96,
-        "unrealized_pnl": 455307.91738
+        "notional_usd": 1916806.72,
+        "unrealized_pnl": 432750.15738
       },
       {
         "coin": "AVAX",
         "szi": -9870.0,
-        "notional_usd": 62259.96,
-        "unrealized_pnl": 425851.43219
+        "notional_usd": 64191.519,
+        "unrealized_pnl": 423919.87319
       },
       {
         "coin": "BNB",
         "szi": -128.0,
-        "notional_usd": 78048.0,
-        "unrealized_pnl": 11210.91437
+        "notional_usd": 78604.8,
+        "unrealized_pnl": 10654.11437
       },
       {
         "coin": "OP",
         "szi": -76500.0,
-        "notional_usd": 6553.755,
-        "unrealized_pnl": 166564.52916
+        "notional_usd": 6598.125,
+        "unrealized_pnl": 166520.15916
       },
       {
         "coin": "ARB",
         "szi": -499000.0,
-        "notional_usd": 36975.9,
-        "unrealized_pnl": 445447.506214
+        "notional_usd": 38043.76,
+        "unrealized_pnl": 444379.646214
       },
       {
         "coin": "DOGE",
         "szi": -6786000.0,
-        "notional_usd": 471260.556,
-        "unrealized_pnl": 255205.84821
+        "notional_usd": 477408.672,
+        "unrealized_pnl": 249057.73221
       },
       {
         "coin": "CRV",
         "szi": -267400.0,
-        "notional_usd": 71673.896,
-        "unrealized_pnl": 144297.285812
+        "notional_usd": 69307.406,
+        "unrealized_pnl": 146663.775812
       },
       {
         "coin": "STX",
         "szi": -100800.0,
-        "notional_usd": 12323.808,
-        "unrealized_pnl": 192123.25147
+        "notional_usd": 12457.872,
+        "unrealized_pnl": 191989.18747
       },
       {
         "coin": "XRP",
         "szi": -149000.0,
-        "notional_usd": 149298.0,
-        "unrealized_pnl": 62239.0337
+        "notional_usd": 150773.1,
+        "unrealized_pnl": 60763.9337
       },
       {
         "coin": "TRX",
         "szi": -184000.0,
-        "notional_usd": 61833.2,
-        "unrealized_pnl": -3526.428294
+        "notional_usd": 61829.52,
+        "unrealized_pnl": -3522.748294
       },
       {
         "coin": "kSHIB",
         "szi": -19075000.0,
-        "notional_usd": 83662.95,
-        "unrealized_pnl": 200626.44509
+        "notional_usd": 85303.4,
+        "unrealized_pnl": 198985.99509
       },
       {
         "coin": "UNI",
         "szi": -131000.0,
-        "notional_usd": 466189.7,
-        "unrealized_pnl": 588416.18507
+        "notional_usd": 467683.1,
+        "unrealized_pnl": 586922.78507
       },
       {
         "coin": "SEI",
         "szi": -140000.0,
-        "notional_usd": 5584.88,
-        "unrealized_pnl": 76980.114726
+        "notional_usd": 5846.82,
+        "unrealized_pnl": 76718.174726
       },
       {
         "coin": "ZRO",
         "szi": -57600.0,
-        "notional_usd": 47166.336,
-        "unrealized_pnl": 173465.594381
+        "notional_usd": 47467.584,
+        "unrealized_pnl": 173164.346381
       },
       {
         "coin": "TIA",
         "szi": -4100.0,
-        "notional_usd": 1238.938,
-        "unrealized_pnl": 33808.643475
+        "notional_usd": 1259.725,
+        "unrealized_pnl": 33787.856475
       },
       {
         "coin": "NEAR",
         "szi": -276900.0,
-        "notional_usd": 453202.23,
-        "unrealized_pnl": 208579.09945
+        "notional_usd": 461343.09,
+        "unrealized_pnl": 200438.23945
       },
       {
         "coin": "FIL",
         "szi": -19600.0,
-        "notional_usd": 13073.788,
-        "unrealized_pnl": 141921.3255
+        "notional_usd": 13334.468,
+        "unrealized_pnl": 141660.6455
       },
       {
         "coin": "kBONK",
         "szi": -2380000.0,
-        "notional_usd": 5314.54,
-        "unrealized_pnl": 53798.797873
+        "notional_usd": 5374.04,
+        "unrealized_pnl": 53739.297873
       },
       {
         "coin": "ONDO",
         "szi": -165000.0,
-        "notional_usd": 54210.75,
-        "unrealized_pnl": 98261.839107
+        "notional_usd": 55312.95,
+        "unrealized_pnl": 97159.639107
       },
       {
         "coin": "TAO",
         "szi": -1890.0,
-        "notional_usd": 377678.7,
-        "unrealized_pnl": 230362.49139
+        "notional_usd": 378378.0,
+        "unrealized_pnl": 229663.19139
       },
       {
         "coin": "kFLOKI",
         "szi": -515000.0,
-        "notional_usd": 10364.89,
-        "unrealized_pnl": 108410.658934
+        "notional_usd": 10560.59,
+        "unrealized_pnl": 108214.958934
       },
       {
         "coin": "ENA",
         "szi": -4250000.0,
-        "notional_usd": 366490.25,
-        "unrealized_pnl": 2864141.021952
+        "notional_usd": 373570.75,
+        "unrealized_pnl": 2857060.521952
       },
       {
         "coin": "POL",
         "szi": -176000.0,
-        "notional_usd": 13084.72,
-        "unrealized_pnl": 113493.86158
+        "notional_usd": 13089.824,
+        "unrealized_pnl": 113488.75758
       },
       {
         "coin": "MOODENG",
         "szi": -1796000.0,
-        "notional_usd": 64575.18,
-        "unrealized_pnl": 782087.753658
+        "notional_usd": 65853.932,
+        "unrealized_pnl": 780809.001658
       },
       {
         "coin": "GRASS",
         "szi": -20000.0,
-        "notional_usd": 6090.6,
-        "unrealized_pnl": 2997.972014
+        "notional_usd": 6249.8,
+        "unrealized_pnl": 2838.772014
       },
       {
         "coin": "HYPE",
         "szi": -433080.0,
-        "notional_usd": 24222597.48,
-        "unrealized_pnl": -11753122.791727
+        "notional_usd": 24759616.68,
+        "unrealized_pnl": -12290141.991727
       },
       {
         "coin": "VIRTUAL",
         "szi": -94500.0,
-        "notional_usd": 56259.63,
-        "unrealized_pnl": 164318.042807
+        "notional_usd": 56277.585,
+        "unrealized_pnl": 164300.087807
       },
       {
         "coin": "PENGU",
         "szi": -6993000.0,
-        "notional_usd": 43349.607,
-        "unrealized_pnl": 158288.008257
+        "notional_usd": 44111.844,
+        "unrealized_pnl": 157525.771257
       },
       {
         "coin": "FARTCOIN",
         "szi": -3160300.0,
-        "notional_usd": 411818.693,
-        "unrealized_pnl": 3584166.994718
+        "notional_usd": 421868.447,
+        "unrealized_pnl": 3574117.240718
       },
       {
         "coin": "SPX",
         "szi": -139500.0,
-        "notional_usd": 43830.9,
-        "unrealized_pnl": 189374.42817
+        "notional_usd": 44762.76,
+        "unrealized_pnl": 188442.56817
       },
       {
         "coin": "VVV",
         "szi": -15800.0,
-        "notional_usd": 183264.2,
-        "unrealized_pnl": 50146.727429
+        "notional_usd": 194814.0,
+        "unrealized_pnl": 38596.927429
       },
       {
         "coin": "INIT",
         "szi": -100000.0,
-        "notional_usd": 5103.9,
-        "unrealized_pnl": 75924.904265
+        "notional_usd": 5309.7,
+        "unrealized_pnl": 75719.104265
       },
       {
         "coin": "SYRUP",
         "szi": -30000.0,
-        "notional_usd": 4460.4,
-        "unrealized_pnl": 12015.650848
+        "notional_usd": 4555.8,
+        "unrealized_pnl": 11920.250848
       },
       {
         "coin": "PUMP",
         "szi": -224010000.0,
-        "notional_usd": 613563.39,
-        "unrealized_pnl": 812533.408797
+        "notional_usd": 625659.93,
+        "unrealized_pnl": 800436.868797
       },
       {
         "coin": "XPL",
         "szi": -2100000.0,
-        "notional_usd": 155379.0,
-        "unrealized_pnl": 63313.289306
+        "notional_usd": 157239.6,
+        "unrealized_pnl": 61452.689306
       },
       {
         "coin": "ASTER",
         "szi": -48000.0,
-        "notional_usd": 28859.52,
-        "unrealized_pnl": 3202.40266
+        "notional_usd": 29017.44,
+        "unrealized_pnl": 3044.48266
       },
       {
         "coin": "APEX",
         "szi": -264770.0,
-        "notional_usd": 54558.5062,
-        "unrealized_pnl": 596707.008023
+        "notional_usd": 54617.28514,
+        "unrealized_pnl": 596648.229083
       },
       {
         "coin": "2Z",
         "szi": -1526000.0,
-        "notional_usd": 74571.042,
-        "unrealized_pnl": 877412.143278
+        "notional_usd": 73559.304,
+        "unrealized_pnl": 878423.881278
       },
       {
         "coin": "MON",
         "szi": -17000000.0,
-        "notional_usd": 368917.0,
-        "unrealized_pnl": 138907.84912
+        "notional_usd": 371688.0,
+        "unrealized_pnl": 136136.84912
       },
       {
         "coin": "LIT",
         "szi": -260000.0,
-        "notional_usd": 605020.0,
-        "unrealized_pnl": -113929.0399
+        "notional_usd": 624442.0,
+        "unrealized_pnl": -133351.0399
       },
       {
         "coin": "CHIP",
         "szi": -397500.0,
-        "notional_usd": 9268.11,
-        "unrealized_pnl": 22063.800111
+        "notional_usd": 9208.485,
+        "unrealized_pnl": 22123.425111
       },
       {
         "coin": "CASHCAT",
         "szi": -5400517.0,
-        "notional_usd": 877011.557698,
-        "unrealized_pnl": -272401.194022
+        "notional_usd": 897727.94091,
+        "unrealized_pnl": -293117.577234
       }
     ]
   },
@@ -1497,38 +1497,38 @@
       {
         "coin": "UNI",
         "szi": -92150.0,
-        "notional_usd": 327934.205,
-        "unrealized_pnl": 168521.797611
+        "notional_usd": 328984.715,
+        "unrealized_pnl": 167471.287611
       },
       {
         "coin": "ENA",
         "szi": -163885.0,
-        "notional_usd": 14132.295205,
-        "unrealized_pnl": 13619.946806
+        "notional_usd": 14405.327615,
+        "unrealized_pnl": 13346.914396
       },
       {
         "coin": "HYPE",
         "szi": -124527.33,
-        "notional_usd": 6964938.09423,
-        "unrealized_pnl": -230837.159977
+        "notional_usd": 7119351.98343,
+        "unrealized_pnl": -385251.049177
       },
       {
         "coin": "ASTER",
         "szi": -97313.0,
-        "notional_usd": 58508.46812,
-        "unrealized_pnl": 9746.843772
+        "notional_usd": 58828.62789,
+        "unrealized_pnl": 9426.684002
       },
       {
         "coin": "MON",
         "szi": -11387937.0,
-        "notional_usd": 247129.620837,
-        "unrealized_pnl": -37205.62279
+        "notional_usd": 248985.854568,
+        "unrealized_pnl": -39061.856521
       },
       {
         "coin": "LIT",
         "szi": -700000.0,
-        "notional_usd": 1628900.0,
-        "unrealized_pnl": -394600.717077
+        "notional_usd": 1681190.0,
+        "unrealized_pnl": -446890.717077
       }
     ]
   },
@@ -1543,6 +1543,8 @@
     "spot": {},
     "perp": []
   },
-  "0xc8b527864ef2ad6dc49de7e99943a3a76ad48891__ledger_ts": 1786429143063,
-  "0xc8b527864ef2ad6dc49de7e99943a3a76ad48891__ledger_hashes": []
+  "0xc8b527864ef2ad6dc49de7e99943a3a76ad48891__ledger_ts": 1786592300727,
+  "0xc8b527864ef2ad6dc49de7e99943a3a76ad48891__ledger_hashes": [
+    "0xb913b6f1d2646561ba8d04420d0d7202013400d76d6784335cdc624491683f4c"
+  ]
 }
