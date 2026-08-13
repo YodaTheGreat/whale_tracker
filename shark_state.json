@@ -1,6 +1,6 @@
 {
   "0x9264781948fa2827da22ccdbdcb1af877c7df465": {
-    "last_fill_time": 1786572693432,
+    "last_fill_time": 1786597294704,
     "open_positions": {
       "xyz:SPCX": {
         "size": 203.41000000000017,
@@ -47,10 +47,10 @@
     ]
   },
   "0x1e9b03ec06f463bc5d81c15e050425639cc43855": {
-    "last_fill_time": 1786564741631,
+    "last_fill_time": 1786589113627,
     "open_positions": {
       "HYPE": {
-        "size": 9445.61,
+        "size": 14526.259999999993,
         "open_time": 1786306643068
       },
       "LIT": {
@@ -61,12 +61,12 @@
     "roundtrips": []
   },
   "0xc42ec9d9156d9196f9a3887380ccfaaa518e4c8d": {
-    "last_fill_time": 1786545365450,
+    "last_fill_time": 1786552336442,
     "open_positions": {},
     "roundtrips": []
   },
   "0x408d807d1dbb778f59a9c088e56d4c27bdd362ac": {
-    "last_fill_time": 1786571448411,
+    "last_fill_time": 1786573991258,
     "open_positions": {
       "HYPE": {
         "size": -357.5400000000001,
@@ -91,7 +91,7 @@
     ]
   },
   "0xbeccae9ffcb69e9d42a1d4e744abf8056149562d": {
-    "last_fill_time": 1786554688602,
+    "last_fill_time": 1786588335072,
     "open_positions": {
       "LINK": {
         "size": 7351.4,
@@ -101,7 +101,7 @@
     "roundtrips": []
   },
   "0x7ab12f7a0925ef24927343d47199e75a91fc78aa": {
-    "last_fill_time": 1786542096987,
+    "last_fill_time": 1786595141506,
     "open_positions": {
       "HYPE": {
         "size": -793.6899999999999,
@@ -116,7 +116,7 @@
     "roundtrips": []
   },
   "0x493364de7f4a39ed24f9c68ece229973f324d369": {
-    "last_fill_time": 1786572678375,
+    "last_fill_time": 1786597065823,
     "open_positions": {
       "HYPE": {
         "size": -1589.99,
@@ -126,10 +126,10 @@
     "roundtrips": []
   },
   "0xb67c4c91728e6865b216e11d54b50c75bbd3fd5f": {
-    "last_fill_time": 1786454330058,
+    "last_fill_time": 1786465432214,
     "open_positions": {
       "HYPE": {
-        "size": -4335.770000000001,
+        "size": -8137.200000000001,
         "open_time": 1786348288172
       }
     },
