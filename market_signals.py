@@ -14,7 +14,9 @@ market_signals.py — мониторинг "агрегированных умн�
    короткий интервал = крупный приток или отток капитала, часто предшествует
    волатильному движению.
 
-Источник: Binance Futures public API (fapi.binance.com), без ключа, бесплатно.
+Источник: Bybit public API (api.bybit.com), без ключа, бесплатно. (Изначально
+использовался Binance, но Binance блокирует запросы с IP облачных провайдеров,
+включая GitHub Actions — отсюда переход на Bybit.)
 
 Состояние (предыдущее значение OI для расчёта % изменения) хранится в
 market_state.json — как и у shark/whale трекеров, коммитится в приватный
@@ -29,8 +31,7 @@ import time
 import urllib.request
 from pathlib import Path
 
-FUNDING_URL = "https://fapi.binance.com/fapi/v1/premiumIndex"
-OI_URL = "https://fapi.binance.com/fapi/v1/openInterest"
+TICKERS_URL = "https://api.bybit.com/v5/market/tickers"
 
 STATE_FILE = Path(__file__).parent / "data" / "market_state.json"
 CONFIG_FILE = Path(__file__).parent / "data" / "market_config.json"
@@ -85,15 +86,20 @@ def main():
         print(f"Проверяю {symbol}...")
 
         try:
-            funding_data = http_get(FUNDING_URL, {"symbol": symbol})
-            oi_data = http_get(OI_URL, {"symbol": symbol})
+            resp = http_get(TICKERS_URL, {"category": "linear", "symbol": symbol})
         except Exception as e:
             print(f"  [WARN] запрос не удался для {symbol}: {e}")
             continue
 
-        funding_rate_pct = float(funding_data.get("lastFundingRate", 0)) * 100
-        mark_price = float(funding_data.get("markPrice", 0))
-        open_interest = float(oi_data.get("openInterest", 0))
+        result_list = resp.get("result", {}).get("list", [])
+        if not result_list:
+            print(f"  [WARN] пустой ответ для {symbol}: {resp}")
+            continue
+
+        ticker = result_list[0]
+        funding_rate_pct = float(ticker.get("fundingRate", 0)) * 100
+        mark_price = float(ticker.get("markPrice", 0))
+        open_interest = float(ticker.get("openInterest", 0))
         oi_usd = open_interest * mark_price
 
         prev = state.get(symbol, {})
