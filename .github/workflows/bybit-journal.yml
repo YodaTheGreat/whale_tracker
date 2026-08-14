@@ -1,0 +1,40 @@
+name: Bybit Trading Journal
+on:
+  workflow_dispatch: {}
+
+concurrency:
+  group: bybit-journal
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout data repo
+        uses: actions/checkout@v4
+        with:
+          repository: YodaTheGreat/whale_tracker_data
+          token: ${{ secrets.DATA_REPO_TOKEN }}
+          path: data
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install --quiet google-auth
+      - name: Run trading journal
+        env:
+          BYBIT_API_KEY: ${{ secrets.BYBIT_API_KEY }}
+          BYBIT_API_SECRET: ${{ secrets.BYBIT_API_SECRET }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          PYTHONUNBUFFERED: "1"
+        run: python bybit_journal.py
+      - name: Commit updated state to data repo
+        run: |
+          cd data
+          git config user.name "bybit-journal-bot"
+          git config user.email "actions@github.com"
+          git add bybit_state.json
+          git diff --staged --quiet || git commit -m "update bybit journal state"
+          git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main
+          git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
