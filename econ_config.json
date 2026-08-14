@@ -1,0 +1,5 @@
+{
+  "countries": ["USD"],
+  "min_impact": "High",
+  "reminder_before_minutes": 60
+}
