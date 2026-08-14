@@ -15,6 +15,15 @@ HYPE Whale Tracker — приватный мониторинг кошелько�
 - Впиши адреса в wallets.json
 - Впиши TELEGRAM_BOT_TOKEN и TELEGRAM_CHAT_ID как переменные окружения
   (или в config.json для локального запуска)
+
+Новое:
+- min_change_pct в config.json — обычные доливки/сокращения перп-позиции
+  игнорируются, если изменение меньше этого процента от старого объёма
+  (режет спам вроде "+0.15% на позиции $42M" при уже прошедшем threshold_usd).
+- Отдельная детекция для перпов: 🆕 ОТКРЫЛ ПОЗИЦИЮ / ❌ ЗАКРЫЛ ПОЗИЦИЮ /
+  🔄 РАЗВОРОТ — эти три события всегда приоритетнее обычной доливки.
+- hl_post() теперь сам разруливает HTTP 429 (rate limit) с retry и паузой,
+  а не падает сразу.
 """
 
 import json
@@ -30,6 +39,8 @@ STATE_FILE = Path(__file__).parent / "data" / "last_state.json"
 WALLETS_FILE = Path(__file__).parent / "data" / "wallets.json"
 CONFIG_FILE = Path(__file__).parent / "data" / "config.json"
 
+HL_MAX_RETRIES = 4
+
 
 def load_json(path, default):
     if path.exists():
@@ -44,14 +55,25 @@ def save_json(path, data):
 
 
 def hl_post(body):
+    """POST на Hyperliquid Info API с retry+backoff на HTTP 429 (rate limit)."""
     req = urllib.request.Request(
         HL_API_URL,
         data=json.dumps(body).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    for attempt in range(1, HL_MAX_RETRIES + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < HL_MAX_RETRIES:
+                wait = 2 ** attempt  # 2, 4, 8, 16 секунд
+                print(f"  [429] rate limit, жду {wait}с (попытка {attempt}/{HL_MAX_RETRIES})", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            raise
+    raise RuntimeError("429 не прошло после всех попыток")
 
 
 def get_spot_state(address):
@@ -272,7 +294,47 @@ def check_ledger_activity(label, address, last_seen_ms, seen_hashes, threshold_u
     return messages, max_time, new_hashes
 
 
-def diff_and_alert(label, address, prev, curr, threshold_usd, coin_price_hint=None):
+def diff_perp(coin, old, new, threshold_usd, min_change_pct):
+    """Классифицирует изменение одной перп-позиции.
+    Возвращает готовую строку алерта или None (шум / ниже порога)."""
+    old_notional = old.get("notional_usd", 0.0)
+    new_notional = new.get("notional_usd", 0.0)
+    old_dir = "лонг" if old.get("szi", 0) > 0 else ("шорт" if old.get("szi", 0) < 0 else "нет")
+    new_dir = "лонг" if new.get("szi", 0) > 0 else ("шорт" if new.get("szi", 0) < 0 else "нет")
+    delta_notional = new_notional - old_notional
+
+    # Позиции не было — появилась
+    if old_notional == 0 and new_notional > 0:
+        if new_notional < threshold_usd:
+            return None
+        return f"🆕 ОТКРЫЛ ПОЗИЦИЮ {coin}: {new_dir}, объём {fmt_usd(new_notional)}"
+
+    # Позиция была — исчезла полностью
+    if old_notional > 0 and new_notional == 0:
+        if old_notional < threshold_usd:
+            return None
+        return f"❌ ЗАКРЫЛ ПОЗИЦИЮ {coin}: был {old_dir} {fmt_usd(old_notional)}"
+
+    # Сменился знак направления — разворот (всегда шлём, это редкое и важное)
+    if old_dir != new_dir and old_dir != "нет" and new_dir != "нет":
+        return f"🔄 РАЗВОРОТ {coin}: {old_dir}→{new_dir}, объём {fmt_usd(new_notional)}"
+
+    # Обычная доливка/сокращение — фильтруем и по абсолютному $, и по %
+    if abs(delta_notional) < threshold_usd:
+        return None
+    delta_pct = abs(delta_notional) / old_notional * 100 if old_notional else 100.0
+    if delta_pct < min_change_pct:
+        return None
+
+    verb = "доливает" if delta_notional > 0 else "сокращает"
+    return (
+        f"⚡ ПЕРП {coin}: {old_dir}→{new_dir}, {verb}, "
+        f"объём {fmt_usd(old_notional)}→{fmt_usd(new_notional)} "
+        f"({delta_notional:+.0f}$)"
+    )
+
+
+def diff_and_alert(label, address, prev, curr, threshold_usd, min_change_pct, coin_price_hint=None):
     alerts = []
 
     prev_spot = prev.get("spot", {}) if prev else {}
@@ -301,18 +363,9 @@ def diff_and_alert(label, address, prev, curr, threshold_usd, coin_price_hint=No
     for coin in all_coins:
         old = prev_perp.get(coin, {"szi": 0.0, "notional_usd": 0.0})
         new = curr_perp.get(coin, {"szi": 0.0, "notional_usd": 0.0})
-        old_notional = old.get("notional_usd", 0.0)
-        new_notional = new.get("notional_usd", 0.0)
-        delta_notional = new_notional - old_notional
-        if abs(delta_notional) < threshold_usd:
-            continue
-        old_dir = "лонг" if old.get("szi", 0) > 0 else ("шорт" if old.get("szi", 0) < 0 else "нет")
-        new_dir = "лонг" if new.get("szi", 0) > 0 else ("шорт" if new.get("szi", 0) < 0 else "нет")
-        alerts.append(
-            f"⚡ ПЕРП {coin}: {old_dir}→{new_dir}, "
-            f"объём {fmt_usd(old_notional)}→{fmt_usd(new_notional)} "
-            f"({delta_notional:+.0f}$)"
-        )
+        line = diff_perp(coin, old, new, threshold_usd, min_change_pct)
+        if line:
+            alerts.append(line)
 
     if not alerts:
         return None
@@ -331,6 +384,7 @@ def main():
     token = os.environ.get("TELEGRAM_BOT_TOKEN") or config.get("telegram_bot_token")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID") or config.get("telegram_chat_id")
     threshold_usd = config.get("threshold_usd", 20000)
+    min_change_pct = config.get("min_change_pct", 1.5)
     coins_of_interest = config.get("coins_of_interest")  # None = все монеты
     debug_ledger = config.get("debug_ledger", False)
     ledger_lookback_hours = config.get("ledger_lookback_hours", 1)
@@ -344,6 +398,7 @@ def main():
 
     print(f"[DEBUG] Токен получен: {'да, длина ' + str(len(token)) if token else 'НЕТ'}")
     print(f"[DEBUG] Chat ID получен: {chat_id if chat_id else 'НЕТ'}")
+    print(f"[DEBUG] threshold_usd={threshold_usd}, min_change_pct={min_change_pct}")
 
     state = load_json(STATE_FILE, {})
     new_state = {}
@@ -359,9 +414,9 @@ def main():
 
         prev = state.get(address)
         if prev is not None:
-            msg = diff_and_alert(label, address, prev, curr, threshold_usd, price_hint)
+            msg = diff_and_alert(label, address, prev, curr, threshold_usd, min_change_pct, price_hint)
             if msg:
-                print("  -> изменение баланса найдено, отправляю в Telegram")
+                print("  -> изменение найдено, отправляю в Telegram")
                 send_telegram(token, chat_id, msg)
                 sent_any = True
         else:
