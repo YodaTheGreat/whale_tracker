@@ -1,7 +1,6 @@
 name: Market Signals
 
 on:
-
   workflow_dispatch: {}
 
 jobs:
