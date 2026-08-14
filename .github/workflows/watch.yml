@@ -33,4 +33,5 @@ jobs:
           git config user.email "actions@github.com"
           git add last_state.json
           git diff --staged --quiet || git commit -m "update whale state"
+          git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main
           git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
