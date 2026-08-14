@@ -35,4 +35,3 @@ jobs:
           git diff --staged --quiet || git commit -m "update shark state"
           git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main
           git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
-          
