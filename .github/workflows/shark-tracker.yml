@@ -1,7 +1,6 @@
 name: Shark Tracker
 
 on:
-  
   workflow_dispatch: {}
 
 jobs:
