@@ -1,31 +1,31 @@
 name: Whale Watch
-
 on:
   workflow_dispatch: {}
+
+concurrency:
+  group: whale-watch
+  cancel-in-progress: false
 
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Checkout data repo
         uses: actions/checkout@v4
         with:
           repository: YodaTheGreat/whale_tracker_data
           token: ${{ secrets.DATA_REPO_TOKEN }}
           path: data
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Run whale tracker
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          PYTHONUNBUFFERED: "1"
         run: python watch.py
-
       - name: Commit updated state to data repo
         run: |
           cd data
