@@ -74,6 +74,23 @@ def build_proxy_opener(host, port, username, password):
 
 
 def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms, opener, limit=50):
+    """Bybit ограничивает диапазон одного запроса семью днями — если просят больше,
+    разбиваем на куски по 6 дней (с запасом от границы) и склеиваем результат."""
+    CHUNK_MS = 6 * 24 * 3600 * 1000  # 6 дней с запасом от лимита в 7
+
+    all_trades = []
+    chunk_start = start_ms
+    while chunk_start < end_ms:
+        chunk_end = min(chunk_start + CHUNK_MS, end_ms)
+        all_trades.extend(
+            _bybit_get_closed_pnl_single(api_key, api_secret, category, chunk_start, chunk_end, opener, limit)
+        )
+        chunk_start = chunk_end
+
+    return all_trades
+
+
+def _bybit_get_closed_pnl_single(api_key, api_secret, category, start_ms, end_ms, opener, limit=50):
     params = {
         "category": category,
         "startTime": str(start_ms),
