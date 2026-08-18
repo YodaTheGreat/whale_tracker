@@ -72,8 +72,13 @@ def proxy_fetch_json(worker_url, proxy_secret, target_url, headers):
     req = urllib.request.Request(worker_url, data=payload, method="POST")
     req.add_header("X-Proxy-Secret", proxy_secret)
     req.add_header("Content-Type", "application/json")
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        print(f"  [PROXY] HTTP {e.code}, тело ответа: {body[:300]!r}", file=sys.stderr)
+        raise
 
 
 def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms,
