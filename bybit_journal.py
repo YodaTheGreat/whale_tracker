@@ -65,25 +65,15 @@ def save_json(path, data):
 
 # ---------- Bybit ----------
 
-def proxy_fetch_json(worker_url, proxy_secret, target_url, headers):
-    """Отправляет запрос через Cloudflare Worker-прокси (обход геоблока Bybit
-    для IP GitHub Actions). Воркер сам сходит на target_url и вернёт ответ."""
-    payload = json.dumps({"url": target_url, "method": "GET", "headers": headers}).encode("utf-8")
-    req = urllib.request.Request(worker_url, data=payload, method="POST")
-    req.add_header("X-Proxy-Secret", proxy_secret)
-    req.add_header("Content-Type", "application/json")
-    req.add_header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-    try:
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8", errors="replace")
-        print(f"  [PROXY] HTTP {e.code}, тело ответа: {body[:300]!r}", file=sys.stderr)
-        raise
+def build_proxy_opener(host, port, username, password):
+    """HTTP(S)-прокси через Webshare — обход геоблока Bybit для IP GitHub Actions.
+    Прокси стоит в Лондоне (или другой не-US/не-CN стране), Bybit его не блокирует."""
+    proxy_url = f"http://{username}:{password}@{host}:{port}"
+    proxy_handler = urllib.request.ProxyHandler({"http": proxy_url, "https": proxy_url})
+    return urllib.request.build_opener(proxy_handler)
 
 
-def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms,
-                          worker_url, proxy_secret, limit=50):
+def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms, opener, limit=50):
     params = {
         "category": category,
         "startTime": str(start_ms),
@@ -96,15 +86,20 @@ def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms,
     sign_payload = timestamp + api_key + recv_window + query_string
     signature = hmac.new(api_secret.encode(), sign_payload.encode(), hashlib.sha256).hexdigest()
 
-    target_url = f"{BYBIT_BASE}/v5/position/closed-pnl?{query_string}"
-    headers = {
-        "X-BAPI-API-KEY": api_key,
-        "X-BAPI-TIMESTAMP": timestamp,
-        "X-BAPI-SIGN": signature,
-        "X-BAPI-RECV-WINDOW": recv_window,
-    }
+    url = f"{BYBIT_BASE}/v5/position/closed-pnl?{query_string}"
+    req = urllib.request.Request(url)
+    req.add_header("X-BAPI-API-KEY", api_key)
+    req.add_header("X-BAPI-TIMESTAMP", timestamp)
+    req.add_header("X-BAPI-SIGN", signature)
+    req.add_header("X-BAPI-RECV-WINDOW", recv_window)
 
-    data = proxy_fetch_json(worker_url, proxy_secret, target_url, headers)
+    try:
+        with opener.open(req, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        print(f"  [BYBIT] HTTP {e.code}, тело ответа: {body[:300]!r}", file=sys.stderr)
+        raise
 
     if data.get("retCode") != 0:
         raise RuntimeError(f"Bybit API ошибка: {data.get('retCode')} {data.get('retMsg')}")
@@ -190,8 +185,10 @@ def main():
     api_key = os.environ.get("BYBIT_API_KEY")
     api_secret = os.environ.get("BYBIT_API_SECRET")
     gsa_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
-    worker_url = os.environ.get("CF_WORKER_URL")
-    proxy_secret = os.environ.get("CF_PROXY_SECRET")
+    proxy_host = os.environ.get("WEBSHARE_PROXY_HOST")
+    proxy_port = os.environ.get("WEBSHARE_PROXY_PORT")
+    proxy_user = os.environ.get("WEBSHARE_PROXY_USER")
+    proxy_pass = os.environ.get("WEBSHARE_PROXY_PASS")
 
     if not api_key or not api_secret:
         print("Не заданы BYBIT_API_KEY / BYBIT_API_SECRET.")
@@ -199,8 +196,8 @@ def main():
     if not gsa_json:
         print("Не задан GOOGLE_SERVICE_ACCOUNT_JSON.")
         sys.exit(1)
-    if not worker_url or not proxy_secret:
-        print("Не заданы CF_WORKER_URL / CF_PROXY_SECRET (прокси для обхода геоблока Bybit).")
+    if not all([proxy_host, proxy_port, proxy_user, proxy_pass]):
+        print("Не заданы WEBSHARE_PROXY_HOST/PORT/USER/PASS (прокси для обхода геоблока Bybit).")
         sys.exit(1)
 
     config = load_json(CONFIG_FILE, {})
@@ -219,8 +216,10 @@ def main():
     now_ms = int(time.time() * 1000)
     start_ms = now_ms - lookback_hours * 3600_000
 
+    opener = build_proxy_opener(proxy_host, proxy_port, proxy_user, proxy_pass)
+
     try:
-        trades = bybit_get_closed_pnl(api_key, api_secret, category, start_ms, now_ms, worker_url, proxy_secret)
+        trades = bybit_get_closed_pnl(api_key, api_secret, category, start_ms, now_ms, opener)
     except Exception as e:
         print(f"Не удалось получить сделки с Bybit: {e}", file=sys.stderr)
         sys.exit(1)
