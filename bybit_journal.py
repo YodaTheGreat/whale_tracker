@@ -40,7 +40,7 @@ import urllib.error
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-BYBIT_BASES = ["https://api.bybit.com", "https://api.bytick.com"]  # bytick — запасной домен на случай геоблока (403 из США)
+BYBIT_BASE = "https://api.bybit.com"
 SHEETS_BASE = "https://sheets.googleapis.com/v4/spreadsheets"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 SCOPE = "https://www.googleapis.com/auth/spreadsheets"
@@ -65,7 +65,19 @@ def save_json(path, data):
 
 # ---------- Bybit ----------
 
-def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms, limit=50):
+def proxy_fetch_json(worker_url, proxy_secret, target_url, headers):
+    """Отправляет запрос через Cloudflare Worker-прокси (обход геоблока Bybit
+    для IP GitHub Actions). Воркер сам сходит на target_url и вернёт ответ."""
+    payload = json.dumps({"url": target_url, "method": "GET", "headers": headers}).encode("utf-8")
+    req = urllib.request.Request(worker_url, data=payload, method="POST")
+    req.add_header("X-Proxy-Secret", proxy_secret)
+    req.add_header("Content-Type", "application/json")
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms,
+                          worker_url, proxy_secret, limit=50):
     params = {
         "category": category,
         "startTime": str(start_ms),
@@ -78,29 +90,20 @@ def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms, limit=
     sign_payload = timestamp + api_key + recv_window + query_string
     signature = hmac.new(api_secret.encode(), sign_payload.encode(), hashlib.sha256).hexdigest()
 
-    last_error = None
-    for base in BYBIT_BASES:
-        url = f"{base}/v5/position/closed-pnl?{query_string}"
-        req = urllib.request.Request(url)
-        req.add_header("X-BAPI-API-KEY", api_key)
-        req.add_header("X-BAPI-TIMESTAMP", timestamp)
-        req.add_header("X-BAPI-SIGN", signature)
-        req.add_header("X-BAPI-RECV-WINDOW", recv_window)
-        try:
-            with urllib.request.urlopen(req, timeout=15) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-        except urllib.error.HTTPError as e:
-            print(f"  [BYBIT] {base} -> HTTP {e.code}, пробую следующий домен", file=sys.stderr)
-            last_error = e
-            continue
+    target_url = f"{BYBIT_BASE}/v5/position/closed-pnl?{query_string}"
+    headers = {
+        "X-BAPI-API-KEY": api_key,
+        "X-BAPI-TIMESTAMP": timestamp,
+        "X-BAPI-SIGN": signature,
+        "X-BAPI-RECV-WINDOW": recv_window,
+    }
 
-        if data.get("retCode") != 0:
-            raise RuntimeError(f"Bybit API ошибка: {data.get('retCode')} {data.get('retMsg')}")
+    data = proxy_fetch_json(worker_url, proxy_secret, target_url, headers)
 
-        print(f"  [BYBIT] успешно через {base}")
-        return data.get("result", {}).get("list", [])
+    if data.get("retCode") != 0:
+        raise RuntimeError(f"Bybit API ошибка: {data.get('retCode')} {data.get('retMsg')}")
 
-    raise RuntimeError(f"Все домены Bybit недоступны (последняя ошибка: {last_error})")
+    return data.get("result", {}).get("list", [])
 
 
 # ---------- Google Sheets (через прямой REST + подпись JWT сервисного аккаунта) ----------
@@ -181,12 +184,17 @@ def main():
     api_key = os.environ.get("BYBIT_API_KEY")
     api_secret = os.environ.get("BYBIT_API_SECRET")
     gsa_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+    worker_url = os.environ.get("CF_WORKER_URL")
+    proxy_secret = os.environ.get("CF_PROXY_SECRET")
 
     if not api_key or not api_secret:
         print("Не заданы BYBIT_API_KEY / BYBIT_API_SECRET.")
         sys.exit(1)
     if not gsa_json:
         print("Не задан GOOGLE_SERVICE_ACCOUNT_JSON.")
+        sys.exit(1)
+    if not worker_url or not proxy_secret:
+        print("Не заданы CF_WORKER_URL / CF_PROXY_SECRET (прокси для обхода геоблока Bybit).")
         sys.exit(1)
 
     config = load_json(CONFIG_FILE, {})
@@ -206,7 +214,7 @@ def main():
     start_ms = now_ms - lookback_hours * 3600_000
 
     try:
-        trades = bybit_get_closed_pnl(api_key, api_secret, category, start_ms, now_ms)
+        trades = bybit_get_closed_pnl(api_key, api_secret, category, start_ms, now_ms, worker_url, proxy_secret)
     except Exception as e:
         print(f"Не удалось получить сделки с Bybit: {e}", file=sys.stderr)
         sys.exit(1)
