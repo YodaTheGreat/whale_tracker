@@ -27,6 +27,8 @@ jobs:
           BYBIT_API_KEY: ${{ secrets.BYBIT_API_KEY }}
           BYBIT_API_SECRET: ${{ secrets.BYBIT_API_SECRET }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
+          CF_PROXY_SECRET: ${{ secrets.CF_PROXY_SECRET }}
           PYTHONUNBUFFERED: "1"
         run: python bybit_journal.py
       - name: Commit updated state to data repo
@@ -34,7 +36,11 @@ jobs:
           cd data
           git config user.name "bybit-journal-bot"
           git config user.email "actions@github.com"
-          git add bybit_state.json
-          git diff --staged --quiet || git commit -m "update bybit journal state"
-          git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main
-          git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
+          if [ -f bybit_state.json ]; then
+            git add bybit_state.json
+            git diff --staged --quiet || git commit -m "update bybit journal state"
+            git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main
+            git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
+          else
+            echo "bybit_state.json ещё не создан — коммитить нечего, это нормально."
+          fi
