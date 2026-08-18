@@ -31,7 +31,11 @@ jobs:
           cd data
           git config user.name "econ-calendar-bot"
           git config user.email "actions@github.com"
-          git add econ_state.json
-          git diff --staged --quiet || git commit -m "update econ calendar state"
-          git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main
-          git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
+          if [ -f econ_state.json ]; then
+            git add econ_state.json
+            git diff --staged --quiet || git commit -m "update econ calendar state"
+            git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main
+            git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git HEAD:main
+          else
+            echo "econ_state.json ещё не создан (не было напоминаний) — коммитить нечего, это нормально."
+          fi
