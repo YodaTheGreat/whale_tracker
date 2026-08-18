@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install --quiet google-auth
+        run: pip install --quiet google-auth requests
       - name: Run trading journal
         env:
           BYBIT_API_KEY: ${{ secrets.BYBIT_API_KEY }}
