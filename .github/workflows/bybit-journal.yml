@@ -27,8 +27,10 @@ jobs:
           BYBIT_API_KEY: ${{ secrets.BYBIT_API_KEY }}
           BYBIT_API_SECRET: ${{ secrets.BYBIT_API_SECRET }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
-          CF_PROXY_SECRET: ${{ secrets.CF_PROXY_SECRET }}
+          WEBSHARE_PROXY_HOST: ${{ secrets.WEBSHARE_PROXY_HOST }}
+          WEBSHARE_PROXY_PORT: ${{ secrets.WEBSHARE_PROXY_PORT }}
+          WEBSHARE_PROXY_USER: ${{ secrets.WEBSHARE_PROXY_USER }}
+          WEBSHARE_PROXY_PASS: ${{ secrets.WEBSHARE_PROXY_PASS }}
           PYTHONUNBUFFERED: "1"
         run: python bybit_journal.py
       - name: Commit updated state to data repo
