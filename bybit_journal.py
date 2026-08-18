@@ -40,7 +40,7 @@ import urllib.error
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-BYBIT_BASE = "https://api.bybit.com"
+BYBIT_BASES = ["https://api.bybit.com", "https://api.bytick.com"]  # bytick — запасной домен на случай геоблока (403 из США)
 SHEETS_BASE = "https://sheets.googleapis.com/v4/spreadsheets"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 SCOPE = "https://www.googleapis.com/auth/spreadsheets"
@@ -78,20 +78,29 @@ def bybit_get_closed_pnl(api_key, api_secret, category, start_ms, end_ms, limit=
     sign_payload = timestamp + api_key + recv_window + query_string
     signature = hmac.new(api_secret.encode(), sign_payload.encode(), hashlib.sha256).hexdigest()
 
-    url = f"{BYBIT_BASE}/v5/position/closed-pnl?{query_string}"
-    req = urllib.request.Request(url)
-    req.add_header("X-BAPI-API-KEY", api_key)
-    req.add_header("X-BAPI-TIMESTAMP", timestamp)
-    req.add_header("X-BAPI-SIGN", signature)
-    req.add_header("X-BAPI-RECV-WINDOW", recv_window)
+    last_error = None
+    for base in BYBIT_BASES:
+        url = f"{base}/v5/position/closed-pnl?{query_string}"
+        req = urllib.request.Request(url)
+        req.add_header("X-BAPI-API-KEY", api_key)
+        req.add_header("X-BAPI-TIMESTAMP", timestamp)
+        req.add_header("X-BAPI-SIGN", signature)
+        req.add_header("X-BAPI-RECV-WINDOW", recv_window)
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            print(f"  [BYBIT] {base} -> HTTP {e.code}, пробую следующий домен", file=sys.stderr)
+            last_error = e
+            continue
 
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+        if data.get("retCode") != 0:
+            raise RuntimeError(f"Bybit API ошибка: {data.get('retCode')} {data.get('retMsg')}")
 
-    if data.get("retCode") != 0:
-        raise RuntimeError(f"Bybit API ошибка: {data.get('retCode')} {data.get('retMsg')}")
+        print(f"  [BYBIT] успешно через {base}")
+        return data.get("result", {}).get("list", [])
 
-    return data.get("result", {}).get("list", [])
+    raise RuntimeError(f"Все домены Bybit недоступны (последняя ошибка: {last_error})")
 
 
 # ---------- Google Sheets (через прямой REST + подпись JWT сервисного аккаунта) ----------
