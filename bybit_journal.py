@@ -72,6 +72,7 @@ def proxy_fetch_json(worker_url, proxy_secret, target_url, headers):
     req = urllib.request.Request(worker_url, data=payload, method="POST")
     req.add_header("X-Proxy-Secret", proxy_secret)
     req.add_header("Content-Type", "application/json")
+    req.add_header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
     try:
         with urllib.request.urlopen(req, timeout=20) as resp:
             return json.loads(resp.read().decode("utf-8"))
