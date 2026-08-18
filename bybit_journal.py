@@ -146,8 +146,13 @@ def sheets_get(token, spreadsheet_id, range_a1):
     url = f"{SHEETS_BASE}/{spreadsheet_id}/values/{urllib.parse.quote(range_a1)}"
     req = urllib.request.Request(url)
     req.add_header("Authorization", f"Bearer {token}")
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        print(f"  [SHEETS GET] HTTP {e.code}, тело ответа: {body[:500]!r}", file=sys.stderr)
+        raise
 
 
 def sheets_batch_update(token, spreadsheet_id, data_ranges):
