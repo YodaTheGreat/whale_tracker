@@ -24,7 +24,6 @@ jobs:
 
       - name: Run news watch
         env:
-          CRYPTOPANIC_API_KEY: ${{ secrets.CRYPTOPANIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python news_watch.py
@@ -34,7 +33,10 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add news_state.json news_config.json
+          git add news_state.json
+          if [ -f news_config.json ]; then
+            git add news_config.json
+          fi
           if git diff --cached --quiet; then
             echo "Nothing to commit"
             exit 0
