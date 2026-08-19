@@ -44,6 +44,7 @@ DEFAULT_CONFIG = {
     "macro_keywords": ["Fed", "FOMC", "CPI", "Interest Rate", "SEC", "CFTC", "White House", "Trump"],
     "macro_impact_min": "High",
     "macro_currencies": ["USD"],
+    "macro_enabled": False,
 }
 
 
@@ -130,6 +131,7 @@ def main():
 
     ticker_keywords = config["ticker_keywords"]
     macro_keywords = config.get("macro_keywords", [])
+    macro_enabled = config.get("macro_enabled", False)
 
     now = datetime.now(timezone.utc)
     age_cutoff = now - timedelta(hours=MAX_AGE_HOURS)
@@ -168,7 +170,7 @@ def main():
                     break
 
             hit_macro = None
-            if not hit_ticker:
+            if not hit_ticker and macro_enabled:
                 hit_macro = matches_keywords(full_text, macro_keywords)
 
             if not hit_ticker and not hit_macro:
@@ -185,7 +187,7 @@ def main():
             time.sleep(1)
 
     try:
-        events = fetch_calendar()
+        events = fetch_calendar() if macro_enabled else []
         allowed_currencies = [c.upper() for c in config.get("macro_currencies", ["USD"])]
         for ev in events:
             impact = ev.get("impact", "")
