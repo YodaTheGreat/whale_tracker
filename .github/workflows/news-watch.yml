@@ -41,6 +41,6 @@ jobs:
             echo "Nothing to commit"
             exit 0
           fi
-          git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data main
           git commit -m "Update news state"
+          git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data main
           git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data main
