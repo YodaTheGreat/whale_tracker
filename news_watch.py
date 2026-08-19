@@ -111,7 +111,6 @@ def main():
     ticker_keywords = config["ticker_keywords"]
     macro_keywords = config.get("macro_keywords", [])
 
-    # --- Токен-новости и макро через RSS ---
     for feed_url in RSS_FEEDS:
         try:
             items = fetch_rss(feed_url)
@@ -149,8 +148,31 @@ def main():
             send_telegram(msg)
             time.sleep(1)
 
-    # --- Макрокалендарь ---
     try:
         events = fetch_calendar()
         for ev in events:
-            impact =
+            impact = ev.get("impact", "")
+            if impact.lower() != config["macro_impact_min"].lower():
+                continue
+            title = ev.get("title", "")
+            ev_id = f"{title}_{ev.get('date')}"
+            if ev_id in seen_cal:
+                continue
+            seen_cal.add(ev_id)
+            msg = (
+                f"📅 <b>{title}</b>\n"
+                f"{ev.get('country','')} | {ev.get('date','')} {ev.get('time','')}\n"
+                f"Impact: {impact}"
+            )
+            send_telegram(msg)
+            time.sleep(1)
+    except Exception as e:
+        print(f"calendar error: {e}")
+
+    state["seen_links"] = list(seen_links)[-1000:]
+    state["seen_calendar_ids"] = list(seen_cal)[-200:]
+    save_json(STATE_PATH, state)
+
+
+if __name__ == "__main__":
+    main()
