@@ -26,6 +26,20 @@ RSS_FEEDS = [
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; NewsWatchBot/1.0)"}
 
+DEFAULT_CONFIG = {
+    "ticker_keywords": {
+        "HYPE": ["hyperliquid", "hype"],
+        "WLD": ["worldcoin", "world chain"],
+        "NEAR": ["near protocol"],
+        "ONDO": ["ondo finance", "ondo"],
+        "TAO": ["bittensor"],
+        "LIT": ["lighter dex", "lighter exchange", "lighter protocol", "lighter perp", "$lit", "lit token"],
+        "LINK": ["chainlink"],
+    },
+    "macro_keywords": ["Fed", "FOMC", "CPI", "Interest Rate", "SEC", "CFTC", "White House", "Trump"],
+    "macro_impact_min": "High",
+}
+
 
 def load_json(path, default):
     if path.exists():
@@ -77,25 +91,18 @@ def fetch_calendar():
 def matches_keywords(text, keywords):
     text_low = text.lower()
     for kw in keywords:
-        if re.search(r"\b" + re.escape(kw.lower()) + r"\b", text_low):
-            return kw
+        kw_low = kw.lower()
+        if kw_low.startswith("$"):
+            if kw_low in text_low:
+                return kw
+        else:
+            if re.search(r"\b" + re.escape(kw_low) + r"\b", text_low):
+                return kw
     return None
 
 
 def main():
-    config = load_json(CONFIG_PATH, {
-        "ticker_keywords": {
-            "HYPE": ["hyperliquid", "hype"],
-            "WLD": ["worldcoin", "world chain", " wld "],
-            "NEAR": ["near protocol", " near "],
-            "ONDO": ["ondo finance", "ondo"],
-            "TAO": ["bittensor", " tao "],
-            "LIT": ["litentry", " lit "],
-            "LINK": ["chainlink", " link "],
-        },
-        "macro_keywords": ["Fed", "FOMC", "CPI", "Interest Rate", "SEC", "CFTC", "White House", "Trump"],
-        "macro_impact_min": "High",
-    })
+    config = load_json(CONFIG_PATH, DEFAULT_CONFIG)
     state = load_json(STATE_PATH, {"seen_links": [], "seen_calendar_ids": []})
 
     seen_links = set(state.get("seen_links", []))
@@ -104,6 +111,7 @@ def main():
     ticker_keywords = config["ticker_keywords"]
     macro_keywords = config.get("macro_keywords", [])
 
+    # --- Токен-новости и макро через RSS ---
     for feed_url in RSS_FEEDS:
         try:
             items = fetch_rss(feed_url)
@@ -141,31 +149,8 @@ def main():
             send_telegram(msg)
             time.sleep(1)
 
+    # --- Макрокалендарь ---
     try:
         events = fetch_calendar()
         for ev in events:
-            impact = ev.get("impact", "")
-            if impact.lower() != config["macro_impact_min"].lower():
-                continue
-            title = ev.get("title", "")
-            ev_id = f"{title}_{ev.get('date')}"
-            if ev_id in seen_cal:
-                continue
-            seen_cal.add(ev_id)
-            msg = (
-                f"📅 <b>{title}</b>\n"
-                f"{ev.get('country','')} | {ev.get('date','')} {ev.get('time','')}\n"
-                f"Impact: {impact}"
-            )
-            send_telegram(msg)
-            time.sleep(1)
-    except Exception as e:
-        print(f"calendar error: {e}")
-
-    state["seen_links"] = list(seen_links)[-1000:]
-    state["seen_calendar_ids"] = list(seen_cal)[-200:]
-    save_json(STATE_PATH, state)
-
-
-if __name__ == "__main__":
-    main()
+            impact =
