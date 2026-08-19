@@ -3,7 +3,8 @@ import os
 import re
 import time
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+from email.utils import parsedate_to_datetime
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
@@ -25,6 +26,10 @@ RSS_FEEDS = [
 ]
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; NewsWatchBot/1.0)"}
+
+# Не слать новости старше этого порога — режет и исторический бэклог
+# при первом запуске, и повторные вбросы при ручных перезапусках подряд.
+MAX_AGE_HOURS = 4
 
 DEFAULT_CONFIG = {
     "ticker_keywords": {
@@ -63,6 +68,18 @@ def send_telegram(text):
     urllib.request.urlopen(req, timeout=15)
 
 
+def parse_pubdate(raw):
+    if not raw:
+        return None
+    try:
+        dt = parsedate_to_datetime(raw)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
+    except Exception:
+        return None
+
+
 def fetch_rss(url):
     req = urllib.request.Request(url, headers=HEADERS)
     with urllib.request.urlopen(req, timeout=20) as r:
@@ -73,8 +90,10 @@ def fetch_rss(url):
         title = (item.findtext("title") or "").strip()
         link = (item.findtext("link") or "").strip()
         desc = (item.findtext("description") or "").strip()
+        pub_raw = (item.findtext("pubDate") or "").strip()
+        pub_dt = parse_pubdate(pub_raw)
         if title and link:
-            items.append({"title": title, "link": link, "desc": desc})
+            items.append({"title": title, "link": link, "desc": desc, "pub_dt": pub_dt})
     return items
 
 
@@ -111,6 +130,12 @@ def main():
     ticker_keywords = config["ticker_keywords"]
     macro_keywords = config.get("macro_keywords", [])
 
+    now = datetime.now(timezone.utc)
+    age_cutoff = now - timedelta(hours=MAX_AGE_HOURS)
+
+    sent_count = 0
+    skipped_old = 0
+
     for feed_url in RSS_FEEDS:
         try:
             items = fetch_rss(feed_url)
@@ -122,6 +147,14 @@ def main():
             link = item["link"]
             if link in seen_links:
                 continue
+
+            # Свежесть: если дата публикации известна и старше порога — пропускаем,
+            # но помечаем как "видели", чтобы не проверять снова каждый прогон.
+            if item["pub_dt"] is not None and item["pub_dt"] < age_cutoff:
+                seen_links.add(link)
+                skipped_old += 1
+                continue
+
             full_text = f"{item['title']} {item['desc']}"
 
             hit_ticker = None
@@ -138,6 +171,7 @@ def main():
                 hit_macro = matches_keywords(full_text, macro_keywords)
 
             if not hit_ticker and not hit_macro:
+                seen_links.add(link)
                 continue
 
             seen_links.add(link)
@@ -146,6 +180,7 @@ def main():
             else:
                 msg = f"🏛 <b>MACRO</b> ({hit_macro})\n{item['title']}\n{link}"
             send_telegram(msg)
+            sent_count += 1
             time.sleep(1)
 
     try:
@@ -165,9 +200,12 @@ def main():
                 f"Impact: {impact}"
             )
             send_telegram(msg)
+            sent_count += 1
             time.sleep(1)
     except Exception as e:
         print(f"calendar error: {e}")
+
+    print(f"Sent: {sent_count}, skipped as old: {skipped_old}")
 
     state["seen_links"] = list(seen_links)[-1000:]
     state["seen_calendar_ids"] = list(seen_cal)[-200:]
