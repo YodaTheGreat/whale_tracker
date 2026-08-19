@@ -43,6 +43,7 @@ DEFAULT_CONFIG = {
     },
     "macro_keywords": ["Fed", "FOMC", "CPI", "Interest Rate", "SEC", "CFTC", "White House", "Trump"],
     "macro_impact_min": "High",
+    "macro_currencies": ["USD"],
 }
 
 
@@ -185,9 +186,13 @@ def main():
 
     try:
         events = fetch_calendar()
+        allowed_currencies = [c.upper() for c in config.get("macro_currencies", ["USD"])]
         for ev in events:
             impact = ev.get("impact", "")
             if impact.lower() != config["macro_impact_min"].lower():
+                continue
+            currency = (ev.get("country", "") or "").upper()
+            if allowed_currencies and currency not in allowed_currencies:
                 continue
             title = ev.get("title", "")
             ev_id = f"{title}_{ev.get('date')}"
