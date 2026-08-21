@@ -86,7 +86,10 @@ def main():
         "symbols": ["LINK"],
         "funding_extreme_pct": 0.01,      # Hyperliquid funding обычно расчитывается за 1 час, пороги меньше, чем на CEX за 8ч
         "oi_change_alert_pct": 3.0,
-        "min_oi_usd_to_alert": 5_000_000
+        "min_oi_usd_to_alert": 5_000_000,
+        "majors": ["BTC", "ETH"],          # для этих монет используется price_change_majors_pct
+        "price_change_majors_pct": 1.5,    # % движение цены за 5 мин для BTC/ETH
+        "price_change_alts_pct": 3.0       # % движение цены за 5 мин для остальных монет из symbols
     })
     state = load_json(STATE_FILE, {})
 
@@ -145,6 +148,25 @@ def main():
                     f"{direction}: {oi_change_pct:+.2f}% за 5 мин\n"
                     f"OI сейчас: ${oi_usd:,.0f}\n"
                     f"Было: ${prev_oi_usd:,.0f}"
+                )
+
+        # --- Сигнал 3: резкое % движение цены за 5 мин ---
+        prev_mark_price = prev.get("mark_price")
+        if prev_mark_price and prev_mark_price > 0 and mark_price > 0:
+            price_change_pct = (mark_price - prev_mark_price) / prev_mark_price * 100
+            is_major = symbol in config.get("majors", [])
+            threshold = (
+                config["price_change_majors_pct"] if is_major
+                else config["price_change_alts_pct"]
+            )
+            if abs(price_change_pct) >= threshold:
+                direction = "РОСТ ЦЕНЫ 📈" if price_change_pct > 0 else "ПАДЕНИЕ ЦЕНЫ 📉"
+                messages.append(
+                    f"🚨 <b>Резкое движение цены</b>\n"
+                    f"Токен: {symbol}\n"
+                    f"{direction}: {price_change_pct:+.2f}% за 5 мин\n"
+                    f"Цена сейчас: ${mark_price:,.4f}\n"
+                    f"Было: ${prev_mark_price:,.4f}"
                 )
 
         for msg in messages:
