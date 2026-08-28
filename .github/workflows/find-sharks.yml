@@ -1,0 +1,49 @@
+name: Find Sharks (weekly)
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"   # каждый понедельник в 08:00 UTC — раз в неделю точность не критична
+  workflow_dispatch: {}
+
+concurrency:
+  group: find-sharks
+  cancel-in-progress: false
+
+jobs:
+  find-sharks:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout data repo
+        uses: actions/checkout@v4
+        with:
+          repository: YodaTheGreat/whale_tracker_data
+          token: ${{ secrets.DATA_REPO_TOKEN }}
+          path: data
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run sharks auto-discovery
+        run: python find_sharks_auto.py
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+      - name: Commit updated wallets to data repo
+        run: |
+          cd data
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add sharks_wallets.json
+          if git diff --cached --quiet; then
+            echo "Новых акул не найдено — нечего коммитить"
+          else
+            git commit -m "Auto-discovery: add new shark wallets"
+            git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data main
+            git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data main
+          fi
