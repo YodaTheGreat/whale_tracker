@@ -23,20 +23,35 @@ Shark Tracker — поиск среднесрочных/интрадей кру�
 
 Секреты (те же, что уже настроены для whale-бота): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID.
 
---- ВРЕМЕННАЯ ДИАГНОСТИКА (TARS, 27 авг) ---
-Добавлены print() для поиска причины 2-недельной тишины по акулам:
-- сколько сырых fill'ов вернул API по каждому адресу
-- что реально пришло, если ответ не list (подозрение на смену формата API)
-- сколько fill'ов отфильтровано по вотчлисту / min_trade_usd
-- сводка round-trip'ов и алертов за прогон
-После того как найдём причину — эти print() можно смело убрать обратно.
+--- ИСПРАВЛЕНИЕ (TARS, 28 авг) ---
+Найдена причина 2-недельной тишины: min_trade_usd раньше отсекал КАЖДЫЙ fill по
+отдельности. Акулы, которые набирают/закрывают позицию мелкими клипами (скейлинг),
+никогда не давали ни одного fill'а крупнее порога — трекер их вообще не видел, хотя
+реальная торговля шла постоянно (см. 0xb67c4c91: 45 fill'ов за час, 44 отсеяны).
+
+Теперь: КАЖДЫЙ fill из вотчлиста участвует в отслеживании позиции независимо от его
+размера (иначе позиция теряет синхронизацию с реальностью). Порог min_trade_usd
+применяется только при решении, слать ли алерт — и считается от размера ВСЕЙ позиции
+на момент открытия/закрытия, а не от одного клипа.
+
+Debug-принты из прошлой версии оставлены — полезно видеть картину по каждому кошельку
+на каждом прогоне, можно почистить позже, когда всё стабилизируется.
 """
 
 import json
 import os
 import time
 import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+LOCAL_TZ = ZoneInfo("Europe/Madrid")  # смени на свой часовой пояс, если нужно
+
+
+def fmt_time(ms):
+    dt = datetime.fromtimestamp(ms / 1000, tz=timezone.utc).astimezone(LOCAL_TZ)
+    return dt.strftime("%d.%m.%Y %H:%M %Z")
 
 API_URL = "https://api.hyperliquid.xyz/info"
 STATE_FILE = Path("data/shark_state.json")
@@ -77,8 +92,6 @@ def get_user_fills(address, start_time_ms):
         return []
 
     if not isinstance(result, list):
-        # ВРЕМЕННО: раньше это молча возвращало [] без единого следа в логах.
-        # Если сюда попали — вот она, причина тишины: формат ответа API не list.
         print(f"[DEBUG] {address}: ответ userFillsByTime НЕ список! "
               f"type={type(result)} содержимое (обрезано): {str(result)[:300]}")
         return []
@@ -120,7 +133,8 @@ def main():
 
     print(f"[DEBUG] Кошельков в списке: {len(wallets)}. "
           f"Вотчлист: {sorted(watchlist)}. "
-          f"min_trade_usd={config['min_trade_usd']}, max_holding_hours={config['max_holding_hours']}")
+          f"min_trade_usd={config['min_trade_usd']} (теперь считается от размера ПОЗИЦИИ, не клипа), "
+          f"max_holding_hours={config['max_holding_hours']}")
 
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
@@ -154,9 +168,10 @@ def main():
         fills = sorted(fills, key=lambda f: f.get("time", 0))
 
         skipped_not_watchlist = 0
-        skipped_small = 0
         opened_count = 0
         closed_count = 0
+        suppressed_small_open = 0
+        suppressed_small_close = 0
 
         for fill in fills:
             coin = fill.get("coin")
@@ -164,36 +179,38 @@ def main():
             sz = float(fill.get("sz", 0))
             px = float(fill.get("px", 0))
             fill_time = fill.get("time", now_ms)
-            notional = sz * px
 
             # только монеты из вотчлиста (пропускаем акции типа xyz:PLTR и всё лишнее)
             if watchlist and coin not in watchlist:
                 skipped_not_watchlist += 1
                 continue
 
-            if notional < config["min_trade_usd"]:
-                skipped_small += 1
-                continue
-
+            # ВАЖНО: больше НЕ пропускаем мелкие fill'ы здесь — иначе позиция теряет
+            # синхронизацию с реальностью, если акула скейлится мелкими клипами.
             signed_sz = sz if side == "B" else -sz
             pos = wstate["open_positions"].get(coin)
 
             if pos is None:
                 wstate["open_positions"][coin] = {"size": signed_sz, "open_time": fill_time}
                 opened_count += 1
+                open_notional = abs(signed_sz) * px
                 if config.get("alert_on_open", True):
-                    direction = "LONG" if signed_sz > 0 else "SHORT"
-                    msg = (
-                        f"<b>🐋 ОТКРЫТИЕ</b>\n"
-                        f"Кошелёк: {label}\n"
-                        f"Токен: {coin}\n"
-                        f"Направление: {direction}\n"
-                        f"Объём: ${notional:,.0f}\n"
-                        f"Цена входа: {px}\n"
-                        f"https://hypurrscan.io/address/{address}"
-                    )
-                    send_telegram(token, chat_id, msg)
-                    total_alerts_sent += 1
+                    if open_notional >= config["min_trade_usd"]:
+                        direction = "LONG" if signed_sz > 0 else "SHORT"
+                        msg = (
+                            f"<b>🐋 ОТКРЫТИЕ</b>\n"
+                            f"Кошелёк: {label}\n"
+                            f"Токен: {coin}\n"
+                            f"Направление: {direction}\n"
+                            f"Объём: ${open_notional:,.0f}\n"
+                            f"Цена входа: {px}\n"
+                            f"Время входа: {fmt_time(fill_time)}\n"
+                            f"https://hypurrscan.io/address/{address}"
+                        )
+                        send_telegram(token, chat_id, msg)
+                        total_alerts_sent += 1
+                    else:
+                        suppressed_small_open += 1
                 continue
 
             new_size = pos["size"] + signed_sz
@@ -203,26 +220,33 @@ def main():
                 closed_count += 1
                 holding_seconds = (fill_time - pos["open_time"]) / 1000
                 holding_h = holding_seconds / 3600
+                # notional всей закрываемой позиции (а не последнего клипа)
+                close_notional = abs(pos["size"]) * px
 
                 wstate["roundtrips"].append({"coin": coin, "close_time": fill_time, "holding_h": holding_h})
                 cutoff = now_ms - config["frequency_window_hours"] * 3600 * 1000
                 wstate["roundtrips"] = [r for r in wstate["roundtrips"] if r["close_time"] >= cutoff]
 
                 if holding_h <= config["max_holding_hours"]:
-                    recent_count = len([r for r in wstate["roundtrips"] if r["coin"] == coin])
-                    tag = "🦈 АКУЛА" if recent_count >= config["min_roundtrips_for_shark_tag"] else "быстрое закрытие"
-                    direction = "LONG → flat" if pos["size"] > 0 else "SHORT → flat"
-                    msg = (
-                        f"<b>{tag}</b>\n"
-                        f"Кошелёк: {label}\n"
-                        f"Токен: {coin}\n"
-                        f"{direction}, holding: {fmt_duration(holding_seconds)}\n"
-                        f"Объём закрытия: ${notional:,.0f}\n"
-                        f"Round-trip'ов по {coin} за {config['frequency_window_hours']}ч: {recent_count}\n"
-                        f"https://hypurrscan.io/address/{address}"
-                    )
-                    send_telegram(token, chat_id, msg)
-                    total_alerts_sent += 1
+                    if close_notional >= config["min_trade_usd"]:
+                        recent_count = len([r for r in wstate["roundtrips"] if r["coin"] == coin])
+                        tag = "🦈 АКУЛА" if recent_count >= config["min_roundtrips_for_shark_tag"] else "быстрое закрытие"
+                        direction = "LONG → flat" if pos["size"] > 0 else "SHORT → flat"
+                        msg = (
+                            f"<b>{tag}</b>\n"
+                            f"Кошелёк: {label}\n"
+                            f"Токен: {coin}\n"
+                            f"{direction}, holding: {fmt_duration(holding_seconds)}\n"
+                            f"Объём закрытия: ${close_notional:,.0f}\n"
+                            f"Время входа: {fmt_time(pos['open_time'])}\n"
+                            f"Время закрытия: {fmt_time(fill_time)}\n"
+                            f"Round-trip'ов по {coin} за {config['frequency_window_hours']}ч: {recent_count}\n"
+                            f"https://hypurrscan.io/address/{address}"
+                        )
+                        send_telegram(token, chat_id, msg)
+                        total_alerts_sent += 1
+                    else:
+                        suppressed_small_close += 1
                 else:
                     print(f"[DEBUG] {label}: round-trip по {coin} закрыт, "
                           f"но holding_h={holding_h:.1f} > max_holding_hours={config['max_holding_hours']} — не акула")
@@ -236,8 +260,8 @@ def main():
 
         print(f"[DEBUG] {label}: обработано fill'ов={len(fills)}, "
               f"пропущено (не вотчлист)={skipped_not_watchlist}, "
-              f"пропущено (мелкая сумма < min_trade_usd)={skipped_small}, "
-              f"открытий={opened_count}, закрытий={closed_count}")
+              f"открытий={opened_count} (подавлено как мелкие={suppressed_small_open}), "
+              f"закрытий={closed_count} (подавлено как мелкие={suppressed_small_close})")
 
         wstate["last_fill_time"] = fills[-1].get("time", wstate["last_fill_time"]) + 1
 
