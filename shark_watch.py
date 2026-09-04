@@ -36,6 +36,19 @@ Shark Tracker — поиск среднесрочных/интрадей кру�
 
 Debug-принты из прошлой версии оставлены — полезно видеть картину по каждому кошельку
 на каждом прогоне, можно почистить позже, когда всё стабилизируется.
+
+--- НОВОЕ (TARS, 4 сен) ---
+Раньше трекер видел только ОТКРЫТИЕ (с нуля) и ЗАКРЫТИЕ (в ноль) позиции. Но во время
+сильных трендов акулы чаще всего просто ДОБАВЛЯЮТ в уже открытую позицию (или частично
+сокращают её, не закрывая полностью) — это оставалось невидимым, хотя именно это самый
+частый паттерн в разгар ралли.
+
+Теперь: в начале прогона запоминаем размер каждой открытой позиции ДО обработки новых
+fill'ов, в конце сравниваем с размером ПОСЛЕ. Если позиция выросла или уменьшилась
+(в одну сторону, без пересечения нуля) больше чем на min_position_change_pct% И больше
+чем на min_trade_usd в долларах — шлём алерт ➕ ДОБАВЛЕНИЕ или ➖ СОКРАЩЕНИЕ.
+Считается по прогону целиком (5 минут), а не по одному fill'у — чтобы скейлинг мелкими
+клипами не давал спам из десятков алертов подряд.
 """
 
 import json
@@ -126,6 +139,8 @@ def main():
         "min_roundtrips_for_shark_tag": 2,
         "watchlist_coins": ["HYPE", "WLD", "NEAR", "ONDO", "TAO", "LIT", "LINK"],
         "alert_on_open": True,
+        "alert_on_position_change": True,
+        "min_position_change_pct": 20.0,  # порог в % от старого размера позиции
     })
     watchlist = set(config.get("watchlist_coins", []))
     wallets = load_json(WALLETS_FILE, [])
@@ -167,6 +182,11 @@ def main():
 
         fills = sorted(fills, key=lambda f: f.get("time", 0))
 
+        # снимок размеров ДО этого прогона — чтобы в конце сравнить и поймать
+        # значимые довески/сокращения позиции, а не только полные открытия/закрытия
+        baseline_sizes = {coin: pos["size"] for coin, pos in wstate["open_positions"].items()}
+        last_px_seen = {}
+
         skipped_not_watchlist = 0
         opened_count = 0
         closed_count = 0
@@ -184,6 +204,8 @@ def main():
             if watchlist and coin not in watchlist:
                 skipped_not_watchlist += 1
                 continue
+
+            last_px_seen[coin] = px
 
             # ВАЖНО: больше НЕ пропускаем мелкие fill'ы здесь — иначе позиция теряет
             # синхронизацию с реальностью, если акула скейлится мелкими клипами.
@@ -258,10 +280,78 @@ def main():
             else:
                 wstate["open_positions"][coin]["size"] = new_size
 
+        # --- Проверка значимых довесок/сокращений позиции (не открытие, не закрытие) ---
+        # Только для монет, которые были открыты ДО этого прогона и остались открытыми
+        # ПОСЛЕ (если закрылись — уже заалертили выше, если только что открылись — тоже).
+        increased_count = 0
+        decreased_count = 0
+        suppressed_small_change = 0
+        if config.get("alert_on_position_change", True):
+            for coin, old_size in baseline_sizes.items():
+                pos_now = wstate["open_positions"].get(coin)
+                if pos_now is None:
+                    continue  # закрылась в этом прогоне — уже обработано выше
+                new_size = pos_now["size"]
+                if abs(new_size - old_size) < 1e-9:
+                    continue  # не менялась в этом прогоне
+
+                # знак должен совпадать (если бы позиция перевернулась через ноль —
+                # это уже поймано как закрытие+открытие выше, сюда не попадёт)
+                same_sign = (old_size > 0) == (new_size > 0)
+                if not same_sign or old_size == 0:
+                    continue
+
+                px = last_px_seen.get(coin)
+                if px is None:
+                    continue
+
+                change_notional = abs(new_size - old_size) * px
+                change_pct = abs(new_size - old_size) / abs(old_size) * 100
+
+                significant = (
+                    change_notional >= config["min_trade_usd"]
+                    and change_pct >= config["min_position_change_pct"]
+                )
+                if not significant:
+                    suppressed_small_change += 1
+                    continue
+
+                direction = "LONG" if new_size > 0 else "SHORT"
+                position_notional_now = abs(new_size) * px
+
+                if abs(new_size) > abs(old_size):
+                    increased_count += 1
+                    msg = (
+                        f"<b>➕ ДОБАВЛЕНИЕ</b>\n"
+                        f"Кошелёк: {label}\n"
+                        f"Токен: {coin}\n"
+                        f"Направление: {direction}\n"
+                        f"Добавлено: ${change_notional:,.0f} ({change_pct:.0f}% к позиции)\n"
+                        f"Текущий размер позиции: ${position_notional_now:,.0f}\n"
+                        f"Цена: {px}\n"
+                        f"https://hypurrscan.io/address/{address}"
+                    )
+                else:
+                    decreased_count += 1
+                    msg = (
+                        f"<b>➖ СОКРАЩЕНИЕ</b>\n"
+                        f"Кошелёк: {label}\n"
+                        f"Токен: {coin}\n"
+                        f"Направление: {direction}\n"
+                        f"Сокращено: ${change_notional:,.0f} ({change_pct:.0f}% от позиции)\n"
+                        f"Остаток позиции: ${position_notional_now:,.0f}\n"
+                        f"Цена: {px}\n"
+                        f"https://hypurrscan.io/address/{address}"
+                    )
+                send_telegram(token, chat_id, msg)
+                total_alerts_sent += 1
+
         print(f"[DEBUG] {label}: обработано fill'ов={len(fills)}, "
               f"пропущено (не вотчлист)={skipped_not_watchlist}, "
               f"открытий={opened_count} (подавлено как мелкие={suppressed_small_open}), "
-              f"закрытий={closed_count} (подавлено как мелкие={suppressed_small_close})")
+              f"закрытий={closed_count} (подавлено как мелкие={suppressed_small_close}), "
+              f"добавлений={increased_count}, сокращений={decreased_count} "
+              f"(подавлено как незначительные={suppressed_small_change})")
 
         wstate["last_fill_time"] = fills[-1].get("time", wstate["last_fill_time"]) + 1
 
