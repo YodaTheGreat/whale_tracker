@@ -131,7 +131,7 @@ def fmt_duration(seconds):
 
 
 def main():
-    config = load_json(CONFIG_FILE, {
+    default_config = {
         "max_holding_hours": 48,
         "min_trade_usd": 20000,
         "lookback_hours_first_run": 72,
@@ -141,7 +141,13 @@ def main():
         "alert_on_open": True,
         "alert_on_position_change": True,
         "min_position_change_pct": 20.0,  # порог в % от старого размера позиции
-    })
+    }
+    # ВАЖНО: если sharks_config.json уже существует, но в нём нет какого-то нового
+    # ключа (например, добавили фичу, а файл в data-репо не обновили) — раньше это
+    # роняло скрипт с KeyError. Теперь дефолты мёрджатся поверх файла, отсутствующий
+    # ключ просто берётся из default_config, ничего не падает.
+    loaded_config = load_json(CONFIG_FILE, {})
+    config = {**default_config, **loaded_config}
     watchlist = set(config.get("watchlist_coins", []))
     wallets = load_json(WALLETS_FILE, [])
     state = load_json(STATE_FILE, {})
