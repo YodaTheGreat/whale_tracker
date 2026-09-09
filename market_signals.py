@@ -4,18 +4,20 @@ market_signals.py — мониторинг "агрегированных умн�
 данные Hyperliquid: funding rate, open interest, движение цены и просадка
 ликвидности (через OI как прокси).
 
-Добавлено (v2):
-1. price_move_pct за скользящее окно price_window_minutes (напр. 8% за 60 мин)
-   — rolling buffer цены в state, не просто 5-минутная дельта.
-2. liquidity_drop_pct — просадка OI относительно медианы за то же окно
-   (прокси на "исчезновение ликвидности", реальной глубины стакана
-   Hyperliquid info-эндпоинт не отдаёт).
-3. Ночной режим (window_start–window_end, таймзона Europe/Madrid,
-   учитывает CEST/CET автоматически): срочные сигналы (движение цены,
-   просадка ликвидности) — как и раньше, сразу в Telegram с 🚨.
-   Несрочные (funding extreme, OI 5-мин скачок) — НЕ шлются сразу,
-   а дописываются в night_log.json для утренней сводки (digest.py).
-   Днём (вне окна) — всё шлётся сразу, как в v1, ничего не меняется.
+Добавлено (v3):
+1. price_move_pct за скользящее окно price_window_minutes — теперь считается
+   как ДИАПАЗОН (high/low внутри окна), а не разница "было/стало". Ловит
+   спайки, которые уже частично откатились к моменту проверки.
+2. liquidity_drop_pct — просадка OI относительно медианы за то же окно.
+3. Ночной режим: срочные сигналы (движение цены, ликвидность) — сразу.
+   Несрочные — в night_log.json для утренней сводки (digest.py).
+4. Сканер ВСЕГО рынка Hyperliquid (не только твоего вотчлиста, config["symbols"]) —
+   ловит резкие 5-минутные движения по любой монете, которой у тебя нет
+   в списке (например DOT). Порог выше (market_wide_move_pct), т.к. без
+   этого будет шуметь на мусорных монетах с низкой ликвидностью.
+5. Cooldown (alert_cooldown_minutes) на срочные алерты — чтобы одно и то же
+   движение не долбило в Telegram каждые 5 минут, пока диапазон остаётся
+   широким.
 
 Источник: Hyperliquid public API (api.hyperliquid.xyz/info), без ключа.
 Состояние — в market_state.json, ночной лог — в night_log.json,
@@ -55,6 +57,9 @@ DEFAULT_CONFIG = {
     "liquidity_drop_pct": 40.0,     # срочный сигнал: просадка OI относительно медианы за то же окно
     "night_window_start": "22:00",  # локальное время Europe/Madrid
     "night_window_end": "07:00",
+    "alert_cooldown_minutes": 30,   # не повторять один и тот же срочный алерт чаще этого
+    "market_wide_move_pct": 10.0,   # порог для монет ВНЕ твоего вотчлиста (весь Hyperliquid)
+    "market_wide_min_oi_usd": 5_000_000,  # отсекаем низколиквидные монеты (OI как прокси капы)
 }
 
 
@@ -171,6 +176,8 @@ def main():
         # rolling история цены и OI
         price_history = prune_history(prev.get("price_history", []), window_seconds, now_ts)
         oi_history = prune_history(prev.get("oi_history", []), window_seconds, now_ts)
+        last_price_alert_ts = prev.get("last_price_alert_ts", 0)
+        last_liquidity_alert_ts = prev.get("last_liquidity_alert_ts", 0)
 
         urgent_messages = []
         background_messages = []
@@ -207,20 +214,25 @@ def main():
                     f"Цена сейчас: ${mark_price:,.4f}\nБыло: ${prev_mark_price:,.4f}"
                 )
 
-        # --- Сигнал 4 (СРОЧНЫЙ): движение цены за price_window_minutes ---
-        if price_history and mark_price > 0:
-            oldest_ts, oldest_price = price_history[0]
-            if oldest_price > 0:
-                window_change_pct = (mark_price - oldest_price) / oldest_price * 100
+        # --- Сигнал 4 (СРОЧНЫЙ): диапазон движения цены за price_window_minutes ---
+        # Считаем high/low ВСЕГО окна (включая текущую точку), а не просто
+        # "было час назад vs сейчас" — так ловим спайки, которые уже откатились.
+        if len(price_history) >= 2:
+            window_prices = [p for _, p in price_history] + [mark_price]
+            w_high, w_low = max(window_prices), min(window_prices)
+            if w_low > 0:
+                range_pct = (w_high - w_low) / w_low * 100
                 is_tier1 = symbol in config.get("price_move_tier1_symbols", [])
                 move_threshold = config["price_move_tier1_pct"] if is_tier1 else config["price_move_tier2_pct"]
-                if abs(window_change_pct) >= move_threshold:
-                    direction = "ПАМП 🚀" if window_change_pct > 0 else "ДАМП 💥"
+                cooldown_ok = now_ts - last_price_alert_ts >= config["alert_cooldown_minutes"] * 60
+                if range_pct >= move_threshold and cooldown_ok:
+                    direction = "ПАМП 🚀" if mark_price >= (w_high + w_low) / 2 else "ДАМП 💥"
                     urgent_messages.append(
-                        f"🚨 <b>{direction} — движение цены за {config['price_window_minutes']} мин</b>\n"
-                        f"Токен: {symbol}\nИзменение: {window_change_pct:+.2f}% (порог {move_threshold}%)\n"
-                        f"Цена сейчас: ${mark_price:,.4f}\nБыло ~{config['price_window_minutes']}м назад: ${oldest_price:,.4f}"
+                        f"🚨 <b>{direction} — диапазон за {config['price_window_minutes']} мин</b>\n"
+                        f"Токен: {symbol}\nРазмах: {range_pct:+.2f}% (порог {move_threshold}%)\n"
+                        f"High: ${w_high:,.4f} / Low: ${w_low:,.4f}\nСейчас: ${mark_price:,.4f}"
                     )
+                    last_price_alert_ts = now_ts
 
         # --- Сигнал 5 (СРОЧНЫЙ): просадка ликвидности (OI vs медиана за окно) ---
         if len(oi_history) >= 3 and oi_usd > 0:
@@ -228,12 +240,14 @@ def main():
             med = median(oi_values)
             if med > 0:
                 drop_pct = (med - oi_usd) / med * 100
-                if drop_pct >= config["liquidity_drop_pct"]:
+                cooldown_ok = now_ts - last_liquidity_alert_ts >= config["alert_cooldown_minutes"] * 60
+                if drop_pct >= config["liquidity_drop_pct"] and cooldown_ok:
                     urgent_messages.append(
                         f"🚨 <b>Просадка ликвидности (OI)</b>\n"
                         f"Токен: {symbol}\nOI упал на {drop_pct:.1f}% от медианы за {config['price_window_minutes']} мин\n"
                         f"OI сейчас: ${oi_usd:,.0f}\nМедиана: ${med:,.0f}"
                     )
+                    last_liquidity_alert_ts = now_ts
 
         # --- Отправка / логирование ---
         for msg in urgent_messages:
@@ -259,7 +273,58 @@ def main():
             "updated_at": now_ts,
             "price_history": price_history,
             "oi_history": oi_history,
+            "last_price_alert_ts": last_price_alert_ts,
+            "last_liquidity_alert_ts": last_liquidity_alert_ts,
         }
+
+    # --- Сканер ВСЕГО рынка Hyperliquid: ловим резкие движения по монетам,
+    # которых нет в твоём личном вотчлисте (например DOT). Лёгкий — храним
+    # только предыдущую цену, не полную часовую историю, чтобы не раздувать
+    # state.json на сотни инструментов. Порог выше, чтобы не шуметь на мусоре.
+    watchlist_set = set(config["symbols"])
+    universe_prev = state.get("_universe_prev", {})
+    universe_next = {}
+    universe_alert_ts = state.get("_universe_alert_ts", {})
+
+    for asset in universe:
+        name = asset["name"]
+        if name in watchlist_set:
+            continue  # это уже покрыто детальной логикой выше
+        idx = name_to_index.get(name)
+        if idx is None:
+            continue
+        ctx = asset_ctxs[idx]
+        price = float(ctx.get("markPx", 0))
+        if price <= 0:
+            continue
+
+        open_interest = float(ctx.get("openInterest", 0))
+        oi_usd = open_interest * price
+        if oi_usd < config["market_wide_min_oi_usd"]:
+            continue  # низкая капа/ликвидность — не интересно, отсекаем шум
+
+        universe_next[name] = price
+
+        prev_price = universe_prev.get(name)
+        if not prev_price or prev_price <= 0:
+            continue
+
+        change_pct = (price - prev_price) / prev_price * 100
+        last_ts = universe_alert_ts.get(name, 0)
+        cooldown_ok = now_ts - last_ts >= config["alert_cooldown_minutes"] * 60
+        if abs(change_pct) >= config["market_wide_move_pct"] and cooldown_ok:
+            direction = "ПАМП 🚀" if change_pct > 0 else "ДАМП 💥"
+            msg = (
+                f"🚨 <b>{direction} — монета НЕ из вотчлиста</b>\n"
+                f"Токен: {name}\nИзменение: {change_pct:+.2f}% за 5 мин\n"
+                f"Цена сейчас: ${price:,.4f}\nБыло: ${prev_price:,.4f}"
+            )
+            print(f"  -> СРОЧНЫЙ алерт (вне вотчлиста): {msg[:50]}...")
+            send_telegram(token, chat_id, msg)
+            universe_alert_ts[name] = now_ts
+
+    state["_universe_prev"] = universe_next
+    state["_universe_alert_ts"] = universe_alert_ts
 
     save_json(STATE_FILE, state)
 
