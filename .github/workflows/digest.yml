@@ -1,0 +1,37 @@
+name: Morning Digest
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout whale_tracker
+        uses: actions/checkout@v4
+
+      - name: Checkout whale_tracker_data
+        uses: actions/checkout@v4
+        with:
+          repository: YodaTheGreat/whale_tracker_data
+          token: ${{ secrets.DATA_REPO_TOKEN }}
+          path: data
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run digest
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python digest.py
+
+      - name: Commit and push cleared night_log
+        working-directory: data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add night_log.json
+          git diff --staged --quiet || (git pull --rebase https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main && git commit -m "clear night log" && git push https://x-access-token:${{ secrets.DATA_REPO_TOKEN }}@github.com/YodaTheGreat/whale_tracker_data.git main)
